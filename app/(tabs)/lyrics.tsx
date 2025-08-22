@@ -146,8 +146,6 @@ export function LyricsView() {
         lyrics.forEach((_, i) => {
             Animated.spring(animatedScales.current[i], {
                 toValue: i === currentIndex ? 1 : 0.8,
-                friction: 6,
-                tension: 120,
                 useNativeDriver: true,
             }).start();
         });
@@ -166,8 +164,10 @@ export function LyricsView() {
                 }}
                 contentContainerStyle={[styles.container, { maxWidth: width - 48 }]}
                 showsVerticalScrollIndicator={false}
-                bounces={false}
+                bounces={true}
+                bouncesZoom={true}
                 scrollEventThrottle={16}
+                decelerationRate="normal"
             >
                 {loading && <ActivityIndicator animating={true} size="large" />}
                 {!loading && (!lyrics || lyrics.length === 0) && (
