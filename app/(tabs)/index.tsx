@@ -9,6 +9,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [ready, setReady] = useState(false);
@@ -45,7 +46,7 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
         display: "flex",
@@ -84,7 +85,7 @@ export default function HomeScreen() {
                 >
                   <View
                     style={{
-                      marginTop: '25%',
+                      marginTop: '16%',
                     }}
                   >
                     <NowPlayingArtwork />
@@ -137,6 +138,6 @@ export default function HomeScreen() {
           )}
         </>
       )}
-    </View>
+    </SafeAreaView>
   );
 }

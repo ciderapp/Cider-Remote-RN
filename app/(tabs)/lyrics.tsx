@@ -131,7 +131,7 @@ export default function Lyrics() {
         if (!lyrics) return;
         lyrics.forEach((_, i) => {
             Animated.timing(animatedScales.current[i], {
-                toValue: i === currentIndex ? 1.2 : 1,
+                toValue: i === currentIndex ? 1 : 0.8,
                 duration: 250,
                 useNativeDriver: true,
             }).start();
@@ -176,7 +176,7 @@ export default function Lyrics() {
                                         style={styles.lyricTouchable}
                                     >
                                         <Text
-                                            variant={isActive ? "headlineMedium" : "headlineSmall"}
+                                            variant={'displaySmall'}
                                             style={[
                                                 styles.lyricLine,
                                                 isActive ? styles.activeLyric : styles.inactiveLyric,
@@ -207,8 +207,8 @@ const styles = StyleSheet.create({
         alignItems: "flex-start",
     },
     lyricTouchable: {
-        width: '100%',
         borderRadius: 8,
+        width: '100%',
     },
     lyricLine: {
         marginVertical: 32,

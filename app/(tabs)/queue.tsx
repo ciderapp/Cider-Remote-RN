@@ -4,6 +4,7 @@ import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { ScrollView, StyleSheet } from "react-native";
 import { List, Text, useTheme } from "react-native-paper";
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Queue() {
   const queue = useAtomValue(queueItems);
@@ -11,12 +12,14 @@ export default function Queue() {
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text variant="headlineSmall" style={styles.header}>
-        Up Next
-      </Text>
-      {queue.map((item, idx) => (
-        <UIQueueItem key={item.id ?? idx} item={item} idx={idx} />
-      ))}
+      <SafeAreaView>
+        <Text variant="headlineSmall" style={styles.header}>
+          Up Next
+        </Text>
+        {queue.map((item, idx) => (
+          <UIQueueItem key={item.id ?? idx} item={item} idx={idx} />
+        ))}
+      </SafeAreaView>
     </ScrollView>
   );
 }
@@ -38,7 +41,7 @@ function UIQueueItem({ item, idx }: UIQueueItemProps) {
     <List.Item
       title={item.attributes.name ?? "Untitled"}
       description={item.attributes.artistName ?? ""}
-      onPress={() => {}}
+      onPress={() => { }}
       left={(props) =>
         item.attributes.artwork?.url ? (
           <List.Image
