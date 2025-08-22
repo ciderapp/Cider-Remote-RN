@@ -84,7 +84,7 @@ export default function HomeScreen() {
                 >
                   <View
                     style={{
-                      marginTop: '16%',
+                      marginTop: orientation == 'portrait' ? '16%' : 0,
                     }}
                   >
                     <NowPlayingArtwork />
