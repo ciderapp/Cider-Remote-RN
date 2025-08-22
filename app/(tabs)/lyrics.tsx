@@ -1,9 +1,10 @@
+import { ArtworkBlur } from "@/components/ArtworkBlur";
 import { IOState } from "@/lib/io";
 import { getLyrics, LyricLine } from "@/lib/lyrics";
 import { nowPlayingItem, seekTo } from "@/lib/playback-control";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
-import { Animated, Platform, ScrollView, StyleSheet, View, useWindowDimensions } from "react-native";
+import { Animated, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import { ActivityIndicator, Text, TouchableRipple, useTheme } from "react-native-paper";
 
 export default function Lyrics() {
@@ -138,66 +139,70 @@ export default function Lyrics() {
     }, [currentIndex, lyrics]);
 
     return (
-        <ScrollView
-            ref={scrollViewRef}
-            onLayout={(event) => {
-                setScrollViewHeight(event.nativeEvent.layout.height);
-            }}
-            contentContainerStyle={[styles.container, { maxWidth: width - 48 }]}
-            showsVerticalScrollIndicator={false}
-            bounces={false}
-            scrollEventThrottle={16}
-        >
-            {loading && <ActivityIndicator animating={true} size="large" />}
-            {!loading && (!lyrics || lyrics.length === 0) && (
-                <Text variant="titleMedium">No lyrics available for this song.</Text>
-            )}
-            {!loading &&
-                lyrics &&
-                lyrics.map((line, index) => {
-                    const isActive = index === currentIndex;
-                    return (
-                        <Animated.View
-                            key={index}
-                            style={{
-                                transformOrigin: 'left',
-                                transform: [{ scale: animatedScales.current[index] || 1 }],
-                            }}
-                        >
-                            <View
-                                ref={(el) => { lineRefs.current[index] = el; }}
+        <>
+            {nowPlaying && <ArtworkBlur />}
+            <ScrollView
+                ref={scrollViewRef}
+                onLayout={(event) => {
+                    setScrollViewHeight(event.nativeEvent.layout.height);
+                }}
+                contentContainerStyle={[styles.container, { maxWidth: width - 48 }]}
+                showsVerticalScrollIndicator={false}
+                bounces={false}
+                scrollEventThrottle={16}
+            >
+                {loading && <ActivityIndicator animating={true} size="large" />}
+                {!loading && (!lyrics || lyrics.length === 0) && (
+                    <Text variant="titleMedium">No lyrics available for this song.</Text>
+                )}
+                {!loading &&
+                    lyrics &&
+                    lyrics.map((line, index) => {
+                        const isActive = index === currentIndex;
+                        return (
+                            <Animated.View
+                                key={index}
+                                style={{
+                                    transformOrigin: 'left',
+                                    transform: [{ scale: animatedScales.current[index] || 1 }],
+                                }}
                             >
-                                <TouchableRipple
-                                    onPress={() => handleLyricPress(line)}
-                                    rippleColor={theme.colors.primary}
-                                    style={styles.lyricTouchable}
+                                <View
+                                    ref={(el) => { lineRefs.current[index] = el; }}
                                 >
-                                    <Text
-                                        variant={isActive ? "headlineMedium" : "headlineSmall"}
-                                        style={[
-                                            styles.lyricLine,
-                                            isActive ? styles.activeLyric : styles.inactiveLyric,
-                                            {
-                                                color: isActive
-                                                    ? theme.colors.primary
-                                                    : theme.colors.onSurface,
-                                            },
-                                        ]}
+                                    <TouchableRipple
+                                        onPress={() => handleLyricPress(line)}
+                                        rippleColor={theme.colors.primary}
+                                        style={styles.lyricTouchable}
                                     >
-                                        {line.text}
-                                    </Text>
-                                </TouchableRipple>
-                            </View>
-                        </Animated.View>
-                    );
-                })}
-        </ScrollView>
+                                        <Text
+                                            variant={isActive ? "headlineMedium" : "headlineSmall"}
+                                            style={[
+                                                styles.lyricLine,
+                                                isActive ? styles.activeLyric : styles.inactiveLyric,
+                                                {
+                                                    color: isActive
+                                                        ? theme.colors.primary
+                                                        : theme.colors.onSurface,
+                                                },
+                                            ]}
+                                        >
+                                            {line.text}
+                                        </Text>
+                                    </TouchableRipple>
+                                </View>
+                            </Animated.View>
+                        );
+                    })}
+            </ScrollView>
+        </>
+
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        paddingHorizontal: 24,
+        paddingHorizontal: 32,
         paddingVertical: 200, // Fixed padding instead of dynamic
         alignItems: "flex-start",
     },
@@ -206,14 +211,15 @@ const styles = StyleSheet.create({
         borderRadius: 8,
     },
     lyricLine: {
-        marginVertical: 16,
+        marginVertical: 32,
         textAlign: "left",
-        fontWeight: "600",
+        fontWeight: "800",
     },
     activeLyric: {
         opacity: 1,
     },
     inactiveLyric: {
         opacity: 0.6,
+        filter: 'blur(2px)'
     },
 });
