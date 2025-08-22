@@ -63,17 +63,6 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="settings"
-        options={{
-          title: "Settings",
-          tabBarIcon: ({ color }) => (
-            <Icon size={28} source="cog-outline" color={color} />
-          ),
-          animation: "shift",
-        }}
-      />
-
-      <Tabs.Screen
         name="search"
         options={{
           title: "Search",
