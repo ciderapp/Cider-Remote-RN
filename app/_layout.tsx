@@ -40,6 +40,15 @@ export default function RootLayout() {
                 animationDuration: 300,
               }}
             />
+            <Stack.Screen
+              name="modals/connect-qr"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+                title: 'Scan QR Code',
+                headerShown: false,
+              }}
+            />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>

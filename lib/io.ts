@@ -1,7 +1,7 @@
 import {
   APIPlaybackEvent,
   PlaybackStateDidChange,
-  PlaybackTimeDidChange
+  PlaybackTimeDidChange,
 } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { atom, getDefaultStore } from "jotai";
@@ -12,7 +12,15 @@ import { fetchQueue } from "./queue";
 export class IOState {
   static instance: Socket;
 
-  static hostAddress = "http://localhost:10767";
+  static hostAddressAtom = atom<string>("http://127.0.0.1:10767");
+
+  static get hostAddress() {
+    return IOState.store.get(IOState.hostAddressAtom);
+  }
+
+  static set hostAddress(value: string) {
+    IOState.store.set(IOState.hostAddressAtom, value);
+  }
 
   static store = getDefaultStore();
 
@@ -81,15 +89,12 @@ export class IOState {
         const data = msg.data as PlaybackTimeDidChange;
         IOState.store.set(IOState.progress, data.currentPlaybackTime);
         IOState.store.set(IOState.duration, data.currentPlaybackDuration);
-        IOState.store.set(
-          playbackState,
-          data.isPlaying ? "playing" : "paused"
-        );
+        IOState.store.set(playbackState, data.isPlaying ? "playing" : "paused");
         break;
       }
       case "playbackStatus.nowPlayingItemDidChange":
         getNowPlayingItem();
-        console.log(msg)
+        console.log(msg);
         fetchQueue();
         break;
       case "playbackStatus.playbackStateDidChange": {

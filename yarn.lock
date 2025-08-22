@@ -3568,8 +3568,10 @@ __metadata:
     eslint-config-expo: "npm:~9.2.0"
     events: "npm:^3.3.0"
     expo: "npm:~53.0.20"
+    expo-barcode-scanner: "npm:^13.0.1"
     expo-blur: "npm:~14.1.5"
     expo-build-properties: "npm:^0.14.8"
+    expo-camera: "npm:~16.1.11"
     expo-constants: "npm:~17.1.7"
     expo-font: "npm:~13.3.2"
     expo-haptics: "npm:~14.1.4"
@@ -4665,6 +4667,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"expo-barcode-scanner@npm:^13.0.1":
+  version: 13.0.1
+  resolution: "expo-barcode-scanner@npm:13.0.1"
+  dependencies:
+    expo-image-loader: "npm:~4.7.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 10c0/a3b55a9f725957f9fad3fdee7afd7053cbcb0c246fb9487b5f9412b23caeb39d18e82cee80d2f747f5f3d631d695d0f6828af7194be5cb00d80f0a3240a4f5cc
+  languageName: node
+  linkType: hard
+
 "expo-blur@npm:~14.1.5":
   version: 14.1.5
   resolution: "expo-blur@npm:14.1.5"
@@ -4685,6 +4698,23 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10c0/7c41bd282f0a35ce73da82d5a4bfcfe88ce3a1bf34737bcd06c9f2d4f7100bbf31653ff0171d92c18a13f5322f831b224f9e47bf5b05df8f15d9514d53d0c51b
+  languageName: node
+  linkType: hard
+
+"expo-camera@npm:~16.1.11":
+  version: 16.1.11
+  resolution: "expo-camera@npm:16.1.11"
+  dependencies:
+    invariant: "npm:^2.2.4"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+    react-native-web: "*"
+  peerDependenciesMeta:
+    react-native-web:
+      optional: true
+  checksum: 10c0/f33418edf8b62dc7ee53c4e3b9ac493a6c4807384c5d0f73ccaa45d28d25321249f9a6ad87f9a30cbdf3a2a7b05700c0fca219132c4d1b6412b844f23e721513
   languageName: node
   linkType: hard
 
@@ -4729,6 +4759,15 @@ __metadata:
   peerDependencies:
     expo: "*"
   checksum: 10c0/c8d4dd80fec8949b39af27b718383526b268b56cae4465af57ea7c5d470b34933c03574dc9c0baca06cf81018cc1eb63671a84a273abca685efb02cfd1604e3e
+  languageName: node
+  linkType: hard
+
+"expo-image-loader@npm:~4.7.0":
+  version: 4.7.0
+  resolution: "expo-image-loader@npm:4.7.0"
+  peerDependencies:
+    expo: "*"
+  checksum: 10c0/7db9df154f1b44e9877361e0707715503eaaf2b18968b6aecb6b0205612cf40bfd99ab8c6e6d7de3a5abd35267e9636963d5050e082af063d8e527763d597eb1
   languageName: node
   linkType: hard
 

@@ -5,6 +5,7 @@ import { PlaybackButtons } from "@/components/PlaybackButtons";
 import { ProgressBar } from "@/components/ProgressBar";
 import { IOState } from "@/lib/io";
 import { nowPlayingItem } from "@/lib/playback-control";
+import { useRouter } from "expo-router";
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { Dimensions, ScrollView, View } from "react-native";
@@ -13,19 +14,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const [ready, setReady] = useState(false);
-  const [hostAddress, setHostAddress] = useState('');
+  const [hostAddress, setHostAddress] = useAtom(IOState.hostAddressAtom);
+
+  const router = useRouter();
 
   useEffect(() => {
     IOState.load().then(() => {
-      setHostAddress(IOState.hostAddress);
       setReady(true);
     });
   }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-    IOState.hostAddress = hostAddress;
-  }, [hostAddress]);
 
   const connected = useAtomValue(IOState.connected);
   const [apiToken, setApiToken] = useAtom(IOState.apiToken);
@@ -119,6 +116,7 @@ export default function HomeScreen() {
                 display: "flex",
                 width: "100%",
                 height: "100%",
+                padding: 32,
               }}
             >
               <TextInput
@@ -133,6 +131,13 @@ export default function HomeScreen() {
               />
               <Button onPress={IOState.connect} disabled={!apiToken}>
                 Connect
+              </Button>
+              <Button onPress={
+                () => {
+                  router.push('/modals/connect-qr');
+                }
+              }>
+                Scan
               </Button>
             </View>
           )}
