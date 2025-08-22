@@ -6,7 +6,9 @@ export type APIPlaybackEvent<T> = {
 export type APIPlaybackType =
   | "playbackStatus.playbackTimeDidChange"
   | "playbackStatus.nowPlayingItemDidChange"
-  | "playbackStatus.playbackStateDidChange";
+  | "playbackStatus.playbackStateDidChange"
+  | "playerStatus.shuffleModeDidChange"
+  | "playerStatus.repeatModeDidChange"
 
 export type PlaybackTimeDidChange = {
   currentPlaybackDuration: number;

@@ -1,5 +1,6 @@
-import { isPlaying as isPlayingAtom, nextTrack, playPause, previousTrack, toggleRepeat, toggleShuffle } from "@/lib/playback-control";
+import { isPlaying as isPlayingAtom, isShuffleOn as isShuffleOnAtom, nextTrack, playPause, previousTrack, repeatMode as repeatModeAtom, toggleRepeat, toggleShuffle } from "@/lib/playback-control";
 import { useAtomValue } from "jotai";
+import { useMemo } from "react";
 import { StyleSheet, View } from "react-native";
 import { IconButton, useTheme } from "react-native-paper";
 
@@ -8,8 +9,8 @@ export function PlaybackButtons() {
   const theme = useTheme();
 
   // Mock playback state - replace with actual state management
-  const isShuffleOn = false;
-  const repeatMode = "off"; // 'off', 'all', 'one'
+  const isShuffleOn = useAtomValue(isShuffleOnAtom);
+  const repeatMode = useAtomValue(repeatModeAtom);
 
   const handlePlayPause = () => {
     playPause();
@@ -30,6 +31,18 @@ export function PlaybackButtons() {
   const handleRepeat = () => {
     toggleRepeat();
   };
+
+  const repeatIcon = useMemo(() => {
+    if(repeatMode == 0) {
+      return 'repeat';
+    }
+    if(repeatMode == 1) {
+      return 'repeat-once';
+    }
+    if(repeatMode == 2) {
+      return 'repeat'
+    }
+  }, [repeatMode])
 
   return (
     <View style={styles.container}>
@@ -68,10 +81,10 @@ export function PlaybackButtons() {
         />
 
         <IconButton
-          icon={"repeat-once"}
+          icon={repeatIcon}
           size={24}
           iconColor={
-            repeatMode !== "off"
+            repeatMode !== 0
               ? theme.colors.primary
               : theme.colors.onSurfaceVariant
           }

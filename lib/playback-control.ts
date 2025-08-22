@@ -9,6 +9,9 @@ export const nowPlayingItem = atom<NowPlayingInfo | null>(null);
 export const playbackState = atom<PlaybackStates>("stopped");
 export const isPlaying = atom((get) => get(playbackState) === "playing");
 export const volume = atom(1);
+export const shuffleMode = atom(0);
+export const repeatMode = atom(0);
+export const isShuffleOn = atom((get) => get(shuffleMode) === 1);
 
 export async function getVolume() {
   const res = await CiderFetch<{ volume: number }>("/api/v1/playback/volume");
@@ -20,7 +23,10 @@ export async function getNowPlayingItem() {
   const res = await CiderFetch<PlaybackInfoResponse>(
     "/api/v1/playback/now-playing"
   );
-  store.set(nowPlayingItem, res!.info);
+  if(!res) return;
+  store.set(nowPlayingItem, res.info);
+  store.set(repeatMode, res.info.repeatMode);
+  store.set(shuffleMode, res.info.shuffleMode);
 }
 
 export async function playLater(item: ItemTypes) {

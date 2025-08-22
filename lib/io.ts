@@ -6,7 +6,12 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { atom, getDefaultStore } from "jotai";
 import { io, Socket } from "socket.io-client";
-import { getNowPlayingItem, playbackState } from "./playback-control";
+import {
+  getNowPlayingItem,
+  playbackState,
+  repeatMode,
+  shuffleMode,
+} from "./playback-control";
 import { fetchQueue } from "./queue";
 
 export class IOState {
@@ -100,6 +105,16 @@ export class IOState {
       case "playbackStatus.playbackStateDidChange": {
         const data = msg.data as PlaybackStateDidChange;
         IOState.store.set(playbackState, data.state);
+        break;
+      }
+      case "playerStatus.repeatModeDidChange": {
+        const data = msg.data as number;
+        IOState.store.set(repeatMode, data);
+        break;
+      }
+      case "playerStatus.shuffleModeDidChange": {
+        const data = msg.data as number;
+        IOState.store.set(shuffleMode, data);
         break;
       }
       default:
