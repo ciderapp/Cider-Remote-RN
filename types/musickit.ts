@@ -130,3 +130,34 @@ export type QueueItem = {
     "widevine-cert-url": string;
   };
 } & MediaItem;
+
+export type LibraryPlaylist = {
+  id: string;
+  type: "library-playlists";
+  href: string;
+  attributes: {
+    artwork: {
+      hasP3: boolean;
+      height: number | null;
+      url: string;
+      width: number | null;
+    };
+    canDelete: boolean;
+    canEdit: boolean;
+    dateAdded: string;
+    description: {
+      standard: string;
+    };
+    hasCatalog: boolean;
+    hasCollaboration: boolean;
+    isPublic: boolean;
+    lastModifiedDate: string;
+    name: string;
+    playParams: {
+      globalId: string;
+      id: string;
+      isLibrary: boolean;
+      kind: string;
+    };
+  };
+};

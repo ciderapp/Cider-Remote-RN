@@ -26,8 +26,19 @@ export default function RootLayout() {
     <PaperProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <Stack>
+          <Stack.Screen
+            name="play-action"
+            options={{
+              presentation: 'transparentModal',
+              animation: 'slide_from_bottom',
+              title: 'Play Action',
+              headerShown: false,
+              animationDuration: 300,
+            }}
+          />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
+
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

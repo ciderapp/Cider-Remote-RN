@@ -20,19 +20,9 @@ export function NowPlayingArtwork() {
   if (!nowPlaying) return null;
 
   const artworkUri = useMemo(() => {
-    return nowPlaying.artwork.url.replace('{w}', '600').replace('{h}', '600');
+    if(!nowPlaying.artwork) return;
+    return nowPlaying.artwork?.url?.replace('{w}', '600').replace('{h}', '600')
   }, [nowPlaying]);
-
-  useEffect(() => {
-    console.log("Artwork URI changed:", artworkUri);
-    fetch(artworkUri)
-      .then(data => {
-        console.log("Fetched artwork data:", data);
-      })
-      .catch(error => {
-        console.error("Error fetching artwork data:", error);
-      });
-  }, [artworkUri]);
   
   const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 600) * 0.8;
 

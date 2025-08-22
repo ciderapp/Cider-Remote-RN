@@ -72,6 +72,28 @@ export default function TabLayout() {
           animation: "shift",
         }}
       />
+
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: "Search",
+          tabBarIcon: ({ color }) => (
+            <Icon size={28} source="magnify" color={color} />
+          ),
+          animation: "shift",
+        }}
+      />
+
+      <Tabs.Screen
+        name="library"
+        options={{
+          title: "Library",
+          tabBarIcon: ({ color }) => (
+            <Icon size={28} source="music-circle" color={color} />
+          ),
+          animation: "shift",
+        }}
+      />
     </Tabs>
   );
 }

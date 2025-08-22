@@ -3585,6 +3585,7 @@ __metadata:
     react: "npm:19.0.0"
     react-dom: "npm:19.0.0"
     react-native: "npm:0.79.5"
+    react-native-dialog: "npm:^9.3.0"
     react-native-gesture-handler: "npm:~2.24.0"
     react-native-paper: "npm:^5.14.5"
     react-native-reanimated: "npm:~3.17.4"
@@ -7815,6 +7816,15 @@ __metadata:
   version: 19.1.1
   resolution: "react-is@npm:19.1.1"
   checksum: 10c0/3dba763fcd69835ae263dcd6727d7ffcc44c1d616f04b7329e67aefdc66a567af4f8dcecdd29454c7a707c968aa1eb85083a83fb616f01675ef25e71cf082f97
+  languageName: node
+  linkType: hard
+
+"react-native-dialog@npm:^9.3.0":
+  version: 9.3.0
+  resolution: "react-native-dialog@npm:9.3.0"
+  peerDependencies:
+    react-native: ">=0.63.0"
+  checksum: 10c0/bda8e9cc96b99bdc7291b64c16a983ef131af291610e640ea88a7064ce8442cfd32db4fb0a1bb29a64a5c3da8ca51d4f0a8f2e279887a0056dee692a0e74b3d7
   languageName: node
   linkType: hard
 

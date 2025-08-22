@@ -1,4 +1,5 @@
 import { NowPlayingInfo, PlaybackInfoResponse, PlaybackStates } from "@/types";
+import { ItemTypes } from "@/types/search";
 import { CiderFetch } from "@/utils/fetch";
 import { atom, getDefaultStore } from "jotai";
 
@@ -12,11 +13,49 @@ export async function getNowPlayingItem() {
   const res = await CiderFetch<PlaybackInfoResponse>(
     "/api/v1/playback/now-playing"
   );
-  store.set(nowPlayingItem, res.info);
+  store.set(nowPlayingItem, res!.info);
+}
+
+export async function playLater(item: ItemTypes) {
+  const res = await CiderFetch<PlaybackInfoResponse>(
+    "/api/v1/playback/play-later",
+    {
+      id: item.id,
+      type: item.type,
+    },
+    {
+      method: "POST",
+    }
+  );
+}
+
+export async function playNext(item: ItemTypes) {
+  const res = await CiderFetch<PlaybackInfoResponse>(
+    "/api/v1/playback/play-next",
+    {
+      id: item.id,
+      type: item.type,
+    },
+    {
+      method: "POST",
+    }
+  );
+}
+
+export async function playItemHref(href: string) {
+  const res = await CiderFetch<PlaybackInfoResponse>(
+    "/api/v1/playback/play-item-href",
+    {
+      href,
+    },
+    {
+      method: "POST",
+    }
+  );
 }
 
 export async function seekTo(position: number) {
-  console.log('Attempting to seek to position:', position);
+  console.log("Attempting to seek to position:", position);
   try {
     const response = await CiderFetch(
       "/api/v1/playback/seek",
@@ -25,10 +64,10 @@ export async function seekTo(position: number) {
         method: "POST",
       }
     );
-    console.log('Seek API response:', response);
+    console.log("Seek API response:", response);
     return response;
   } catch (error) {
-    console.error('Seek API error:', error);
+    console.error("Seek API error:", error);
     throw error;
   }
 }

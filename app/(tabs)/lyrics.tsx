@@ -38,7 +38,7 @@ export function LyricsView() {
     const { width } = useWindowDimensions();
 
     async function fetchLyrics() {
-        if (!nowPlaying?.playParams.id) {
+        if (!nowPlaying?.playParams?.id) {
             setLyrics(null);
             setCurrentIndex(-1);
             return;
@@ -58,11 +58,10 @@ export function LyricsView() {
     }
 
     useEffect(() => {
-        console.log('Fetching lyrics for:', nowPlaying?.playParams.id);
         fetchLyrics();
         lineRefs.current = [];
         linePositions.current = [];
-    }, [nowPlaying?.playParams.id]);
+    }, [nowPlaying?.playParams?.id]);
 
     useEffect(() => {
         if (!lyrics || lyrics.length === 0) return;

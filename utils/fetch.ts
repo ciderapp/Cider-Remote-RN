@@ -5,7 +5,6 @@ export async function CiderFetch<T>(
   body?: any,
   options: RequestInit = {}
 ) {
-  console.log(IOState.hostAddress + href);
   const response = await fetch(IOState.hostAddress + href, {
     // @ts-expect-error
     headers: {

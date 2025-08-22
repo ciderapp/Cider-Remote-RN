@@ -80,7 +80,7 @@ export default function HomeScreen() {
                     height: "100%",
                     justifyContent: "space-evenly",
                     alignItems: "center",
-
+                    gap: orientation === "landscape" ? 32 : undefined,
                   }}
                 >
                   <View
