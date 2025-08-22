@@ -1,4 +1,3 @@
-import { parseStringPromise } from "xml2js";
 import { v3 } from "./am-api";
 
 type LyricApiResponse = {
@@ -44,48 +43,7 @@ export async function parseTtml(ttml: string): Promise<LyricLine[]> {
   if (!ttml) {
     return [];
   }
-
-  const decodedTtml = ttml.replace(/&lt;/g, "<").replace(/&gt;/g, ">");
-
-  try {
-    const parsed = await parseStringPromise(decodedTtml, {
-      explicitArray: false,
-      explicitCharkey: true,
-      charkey: "_",
-      attrkey: "$",
-    });
-
-    if (!parsed.tt || !parsed.tt.body || !parsed.tt.body.div) {
-      return [];
-    }
-
-    const lines: LyricLine[] = [];
-    const divs = Array.isArray(parsed.tt.body.div)
-      ? parsed.tt.body.div
-      : [parsed.tt.body.div];
-
-    for (const div of divs) {
-      if (!div) continue;
-      const songPart = div.$["itunes:songPart"];
-      if (!div.p) continue;
-      const paragraphs = Array.isArray(div.p) ? div.p : [div.p];
-
-      for (const p of paragraphs) {
-        if (p && p._ && p.$.begin && p.$.end) {
-          lines.push({
-            text: p._.trim(),
-            begin: parseTtmlTime(p.$.begin),
-            end: parseTtmlTime(p.$.end),
-            songPart: songPart,
-          });
-        }
-      }
-    }
-    return lines;
-  } catch (error) {
-    console.error("Failed to parse TTML:", error);
-    return [];
-  }
+  return [];
 }
 
 export async function getLyrics(id: string) {

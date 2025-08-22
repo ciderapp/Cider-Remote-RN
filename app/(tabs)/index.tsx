@@ -12,10 +12,19 @@ import { Button, TextInput } from "react-native-paper";
 
 export default function HomeScreen() {
   const [ready, setReady] = useState(false);
+  const [hostAddress, setHostAddress] = useState('');
 
   useEffect(() => {
-    IOState.load().then(() => setReady(true));
+    IOState.load().then(() => {
+      setHostAddress(IOState.hostAddress);
+      setReady(true);
+    });
   }, []);
+
+  useEffect(() => {
+    if(!ready) return;
+    IOState.hostAddress = hostAddress;
+  }, [hostAddress]);
 
   const connected = useAtomValue(IOState.connected);
   const [apiToken, setApiToken] = useAtom(IOState.apiToken);
@@ -54,9 +63,11 @@ export default function HomeScreen() {
             <View
               style={{
                 flex: 1,
+                display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 width: "100%",
+                height: "100%",
                 overflow: "hidden",
               }}
             >
@@ -64,8 +75,10 @@ export default function HomeScreen() {
                 <View
                   style={{
                     display: "flex",
-                    flexDirection: orientation === "landscape" ? "row" : "column",
+                    flexDirection:
+                      orientation === "landscape" ? "row" : "column",
                     width: "100%",
+                    height: "100%",
                     justifyContent: "space-evenly",
                     alignItems: "center",
                     gap: 32,
@@ -99,20 +112,31 @@ export default function HomeScreen() {
                   </View>
                 </View>
               )}
-              {!connected && (
-                <View>
-                  <TextInput
-                    label="API Token"
-                    value={apiToken || ""}
-                    onChangeText={setApiToken}
-                  />
-                  <Button onPress={IOState.connect} disabled={!apiToken}>
-                    Connect
-                  </Button>
-                </View>
-              )}
             </View>
           </ScrollView>
+          {!connected && (
+            <View
+              style={{
+                display: "flex",
+                width: "100%",
+                height: "100%",
+              }}
+            >
+              <TextInput
+                label="Host Address"
+                value={hostAddress}
+                onChangeText={setHostAddress}
+              />
+              <TextInput
+                label="API Token"
+                value={apiToken || ""}
+                onChangeText={setApiToken}
+              />
+              <Button onPress={IOState.connect} disabled={!apiToken}>
+                Connect
+              </Button>
+            </View>
+          )}
         </>
       )}
     </View>

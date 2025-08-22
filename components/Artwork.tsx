@@ -20,9 +20,20 @@ export function NowPlayingArtwork() {
   if (!nowPlaying) return null;
 
   const artworkUri = useMemo(() => {
-    return nowPlaying.artwork.url
+    return nowPlaying.artwork.url.replace('{w}', '600').replace('{h}', '600');
   }, [nowPlaying]);
 
+  useEffect(() => {
+    console.log("Artwork URI changed:", artworkUri);
+    fetch(artworkUri)
+      .then(data => {
+        console.log("Fetched artwork data:", data);
+      })
+      .catch(error => {
+        console.error("Error fetching artwork data:", error);
+      });
+  }, [artworkUri]);
+  
   const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 600) * 0.8;
 
   return (
@@ -32,6 +43,9 @@ export function NowPlayingArtwork() {
         style={[styles.artwork, { width: artworkSize, height: artworkSize }]}
         contentFit="cover"
         transition={500}
+        cachePolicy="memory-disk"
+        recyclingKey={artworkUri}
+        placeholderContentFit="cover"
       />
     </View>
   );

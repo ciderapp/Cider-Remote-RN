@@ -1,7 +1,7 @@
 import {
-    APIPlaybackEvent,
-    PlaybackStateDidChange,
-    PlaybackTimeDidChange
+  APIPlaybackEvent,
+  PlaybackStateDidChange,
+  PlaybackTimeDidChange
 } from "@/types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { atom, getDefaultStore } from "jotai";
@@ -32,6 +32,10 @@ export class IOState {
     if (apiToken) {
       IOState.store.set(IOState.apiToken, apiToken);
     }
+    const hostAddress = await AsyncStorage.getItem("hostAddress");
+    if (hostAddress) {
+      IOState.hostAddress = hostAddress;
+    }
   }
 
   static async saveApiToken() {
@@ -39,6 +43,7 @@ export class IOState {
       "apiToken",
       IOState.store.get(IOState.apiToken)!
     );
+    await AsyncStorage.setItem("hostAddress", IOState.hostAddress);
   }
 
   static disconnect() {
@@ -49,7 +54,7 @@ export class IOState {
     IOState.saveApiToken();
 
     IOState.store.get(IOState.connected);
-    IOState.instance = io("http://localhost:10767");
+    IOState.instance = io(IOState.hostAddress);
     IOState.instance.on("connect", () => {
       console.log("Connected to server");
       IOState.store.set(IOState.connected, true);
