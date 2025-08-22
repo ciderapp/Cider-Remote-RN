@@ -1,0 +1,1 @@
+This project uses React Native, Expo, TypeScript, and React Native Paper
