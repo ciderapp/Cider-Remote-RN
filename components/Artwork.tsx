@@ -53,7 +53,7 @@ export function PlaceholderArtwork() {
     return () => subscription?.remove();
   }, []);
 
-  const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 400) * 0.8;
+  const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 600) * 0.8;
   
   return (
     <View style={[
