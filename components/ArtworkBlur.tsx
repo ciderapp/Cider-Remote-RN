@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     opacity: 0.3,
-    zIndex: -1,
+    zIndex: 0,
     pointerEvents: 'none',
     userSelect: 'none',
   },

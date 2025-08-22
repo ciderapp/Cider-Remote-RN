@@ -153,7 +153,10 @@ export function LyricsView() {
     }, [currentIndex, lyrics]);
 
     return (
-        <>
+        <View style={{
+            backgroundColor: 'black',
+            height: '100%',
+        }}>
             {nowPlaying && <ArtworkBlur />}
             <ScrollView
                 ref={scrollViewRef}
@@ -195,9 +198,12 @@ export function LyricsView() {
                                                 styles.lyricLine,
                                                 isActive ? styles.activeLyric : styles.inactiveLyric,
                                                 {
-                                                    color: isActive
-                                                        ? theme.colors.primary
-                                                        : theme.colors.onSurface,
+                                                    color: "#fff",
+                                                    textShadowColor: isActive ? "#ffffff88" : undefined,
+                                                    textShadowOffset: isActive
+                                                        ? { width: 0, height: 0 }
+                                                        : undefined,
+                                                    textShadowRadius: isActive ? 12 : 0,
                                                 },
                                             ]}
                                         >
@@ -209,7 +215,7 @@ export function LyricsView() {
                         );
                     })}
             </ScrollView>
-        </>
+        </View>
 
     );
 }

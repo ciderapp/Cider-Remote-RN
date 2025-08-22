@@ -1,20 +1,32 @@
 import { interact } from "@/lib/interact";
 import { getLibraryPlaylists, libraryPlaylists } from "@/lib/library";
 import { ItemTypes } from "@/types/search";
+import { useRouter } from "expo-router";
 import { useAtomValue } from "jotai";
-import { ScrollView } from "react-native";
-import { List, Text } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { IconButton, List, Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Library() {
     const playlists = useAtomValue(libraryPlaylists);
+    const router = useRouter();
     return (
         <ScrollView>
             <SafeAreaView >
-                <Text style={{
-                    padding: 16,
-                    fontWeight: 'bold'
-                }} variant="displayMedium">Library</Text>
+                <View style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between"
+                }}>
+                    <Text style={{
+                        padding: 16,
+                        fontWeight: 'bold'
+                    }} variant="displayMedium">Library</Text>
+                    <IconButton icon="cog" onPress={() => {
+                        router.push('/modals/settings')
+                    }}></IconButton>
+                </View>
 
 
                 <List.Section>

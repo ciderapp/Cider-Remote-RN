@@ -49,7 +49,16 @@ export default function RootLayout() {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="modals/settings"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+                headerShown: false,
+              }}
+            />
           </Stack>
+
           <StatusBar style="auto" />
         </ThemeProvider>
       </PaperProvider>

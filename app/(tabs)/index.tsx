@@ -21,6 +21,8 @@ export default function HomeScreen() {
   useEffect(() => {
     IOState.load().then(() => {
       setReady(true);
+
+      IOState.connect();
     });
   }, []);
 
@@ -117,19 +119,22 @@ export default function HomeScreen() {
                 width: "100%",
                 height: "100%",
                 padding: 32,
+                gap: 16,
               }}
             >
               <TextInput
                 label="Host Address"
                 value={hostAddress}
                 onChangeText={setHostAddress}
+                mode="outlined"
               />
               <TextInput
                 label="API Token"
                 value={apiToken || ""}
                 onChangeText={setApiToken}
+                mode="outlined"
               />
-              <Button onPress={IOState.connect} disabled={!apiToken}>
+              <Button mode="contained" onPress={IOState.connect} disabled={!apiToken}>
                 Connect
               </Button>
               <Button onPress={
