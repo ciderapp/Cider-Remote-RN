@@ -19,6 +19,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
+        freezeOnBlur: true,
+        animation: 'shift',
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
@@ -35,6 +37,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Icon size={28} source="play-circle-outline" color={color} />
           ),
+          animation: "shift",
         }}
       />
 
@@ -55,6 +58,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Icon size={28} source="format-list-bulleted" color={color} />
           ),
+          animation: "shift",
         }}
       />
 
@@ -65,6 +69,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Icon size={28} source="cog-outline" color={color} />
           ),
+          animation: "shift",
         }}
       />
     </Tabs>

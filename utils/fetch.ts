@@ -1,12 +1,11 @@
 import { IOState } from "@/lib/io";
 
-
 export async function CiderFetch<T>(
   href: string,
   body?: any,
   options: RequestInit = {}
 ) {
-  console.log(IOState.hostAddress + href)
+  console.log(IOState.hostAddress + href);
   const response = await fetch(IOState.hostAddress + href, {
     // @ts-expect-error
     headers: {
@@ -18,7 +17,8 @@ export async function CiderFetch<T>(
   });
 
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    console.warn("Fetch error:", response.status, await response.text());
+    return;
   }
 
   return response.json() as Promise<T>;

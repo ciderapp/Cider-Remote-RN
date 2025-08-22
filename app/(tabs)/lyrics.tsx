@@ -2,12 +2,25 @@ import { ArtworkBlur } from "@/components/ArtworkBlur";
 import { IOState } from "@/lib/io";
 import { getLyrics, LyricLine } from "@/lib/lyrics";
 import { nowPlayingItem, seekTo } from "@/lib/playback-control";
+import { useIsFocused } from "@react-navigation/native";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Platform, ScrollView, StyleSheet, useWindowDimensions, View } from "react-native";
 import { ActivityIndicator, Text, TouchableRipple, useTheme } from "react-native-paper";
 
 export default function Lyrics() {
+    const isFocused = useIsFocused();
+    if(!isFocused) {
+        return null;
+    }
+    return (
+        <View>
+            <LyricsView/>
+        </View>
+    );
+}
+
+export function LyricsView() {
     const nowPlaying = useAtomValue(nowPlayingItem);
     const progress = useAtomValue(IOState.progress);
     const [lyrics, setLyrics] = useState<LyricLine[] | null>(null);
@@ -45,6 +58,7 @@ export default function Lyrics() {
     }
 
     useEffect(() => {
+        console.log('Fetching lyrics for:', nowPlaying?.playParams.id);
         fetchLyrics();
         lineRefs.current = [];
         linePositions.current = [];
