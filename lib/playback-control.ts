@@ -8,6 +8,13 @@ const store = getDefaultStore();
 export const nowPlayingItem = atom<NowPlayingInfo | null>(null);
 export const playbackState = atom<PlaybackStates>("stopped");
 export const isPlaying = atom((get) => get(playbackState) === "playing");
+export const volume = atom(1);
+
+export async function getVolume() {
+  const res = await CiderFetch<{ volume: number }>("/api/v1/playback/volume");
+  if(!res) return;
+  store.set(volume, res.volume);
+}
 
 export async function getNowPlayingItem() {
   const res = await CiderFetch<PlaybackInfoResponse>(

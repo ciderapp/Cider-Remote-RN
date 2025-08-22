@@ -9,7 +9,7 @@ type Props = {
 export function NowPlayingMetadata({ nowPlaying }: Props) {
     return (
         <View style={styles.container}>
-            <Text variant="headlineSmall" style={styles.songTitle} numberOfLines={2}>
+            <Text variant="headlineSmall" style={styles.songTitle} numberOfLines={1}>
                 {nowPlaying.name}
             </Text>
             <Text variant="titleMedium" style={styles.artistName} numberOfLines={1}>
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 8,
         lineHeight: 28,
+        maxWidth: '90%',
     },
     artistName: {
         textAlign: 'center',

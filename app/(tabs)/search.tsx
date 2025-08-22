@@ -3,7 +3,7 @@ import { searchCatalog } from "@/lib/search";
 import { ItemTypes, SearchResponse } from "@/types/search";
 import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { Button, Card, List, Text, TextInput } from "react-native-paper";
+import { Card, List, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SearchPage() {
@@ -73,20 +73,10 @@ export default function SearchPage() {
                 <TextInput
                     value={searchQuery}
                     onChangeText={setSearchQuery}
-                    onKeyPress={({nativeEvent}) => {
-                        if (nativeEvent.key === "Enter") {
-                            handleSearch();
-                        }
-                    }}
+                    onEndEditing={handleSearch}
                     mode="outlined" label="Albums, Songs, Lyrics, and More"></TextInput>
-                <Button
-                    onPress={handleSearch}
-                    icon='magnify'
-                >
-                    Search
-                </Button>
 
-                <Card>
+                <Card style={{marginTop: 16}}>
                     <Card.Content>
                         <List.Section>
                             {sortOrder

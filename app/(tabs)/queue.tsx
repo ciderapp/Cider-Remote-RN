@@ -1,10 +1,10 @@
-import { fetchQueue, queueItems } from "@/lib/queue";
+import { changeToIndex, fetchQueue, queueItems, removeByIndex } from "@/lib/queue";
 import { QueueItem } from "@/types/musickit";
 import { useIsFocused } from "@react-navigation/native";
 import { useAtomValue } from "jotai";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
-import { List, Text, useTheme } from "react-native-paper";
+import { Button, Dialog, List, Portal, Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Queue() {
@@ -27,7 +27,7 @@ export default function Queue() {
   }
 
   useEffect(() => {
-    if(isFocused) {
+    if (isFocused) {
       fetchQueue();
     }
   }, [isFocused])
@@ -52,6 +52,7 @@ type UIQueueItemProps = {
 };
 
 function UIQueueItem({ item, idx }: UIQueueItemProps) {
+  const [showActions, setShowActions] = useState(false);
   const theme = useTheme();
   const artworkUri = useMemo(() => {
     return item.attributes.artwork?.url
@@ -60,25 +61,54 @@ function UIQueueItem({ item, idx }: UIQueueItemProps) {
   }, [item]);
 
   return (
-    <List.Item
-      title={item.attributes.name ?? "Untitled"}
-      description={item.attributes.artistName ?? ""}
-      onPress={() => { }}
-      left={(props) =>
-        item.attributes.artwork?.url ? (
-          <List.Image
-            {...props}
-            source={{ uri: artworkUri }}
-            style={styles.artwork}
-          />
-        ) : (
-          <List.Icon {...props} icon="music" style={styles.artwork} />
-        )
-      }
-      titleStyle={styles.title}
-      descriptionStyle={[styles.description, { color: theme.colors.onSurfaceVariant }]}
-      style={styles.listItem}
-    />
+    <>
+      <List.Item
+        title={item.attributes.name ?? "Untitled"}
+        description={item.attributes.artistName ?? ""}
+        onPress={() => {
+          changeToIndex(idx);
+        }}
+        onLongPress={() => {
+          setShowActions(true);
+        }}
+        left={(props) =>
+          item.attributes.artwork?.url ? (
+            <List.Image
+              {...props}
+              source={{ uri: artworkUri }}
+              style={styles.artwork}
+            />
+          ) : (
+            <List.Icon {...props} icon="music" style={styles.artwork} />
+          )
+        }
+        titleStyle={styles.title}
+        descriptionStyle={[styles.description, { color: theme.colors.onSurfaceVariant }]}
+        style={styles.listItem}
+      />
+
+      <View>
+        <Portal>
+          <Dialog visible={showActions} onDismiss={() => setShowActions(false)}>
+            <Dialog.Title>
+              {item.attributes.name ?? "Untitled"}
+            </Dialog.Title>
+            <Dialog.Content>
+              <Button
+                icon="close"
+
+                onPress={() => {
+                  removeByIndex(idx);
+                  setShowActions(false);
+                }}>Remove From Queue</Button>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setShowActions(false)}>Done</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      </View>
+    </>
   );
 }
 
