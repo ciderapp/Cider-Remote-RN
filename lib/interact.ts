@@ -4,6 +4,7 @@ import { playItemHref, playLater, playNext } from "./playback-control";
 
 type InteractOptions = {
   item: ItemTypes;
+  playItem?: boolean;
 };
 
 type PlayActionPromise = {
@@ -16,6 +17,10 @@ export const playActionPromise = {
 };
 
 const itemHandlers: { [key: string]: (item: ItemTypes) => Promise<void> } = {
+  playlists: async (item) => {},
+  albums: async (item) => {
+    router.push(`/albums/${item.id}`);
+  },
   media: async (item) => {
     router.push("/play-action");
     playActionPromise.item = item;
@@ -40,8 +45,9 @@ const itemHandlers: { [key: string]: (item: ItemTypes) => Promise<void> } = {
 
 export async function interact(opts: InteractOptions) {
   const { item } = opts;
-  const handler = itemHandlers[item.type];
-  if (handler) {
+  const typeKey = item.type.replace("library-", "");
+  const handler = itemHandlers[typeKey.endsWith("s") ? typeKey : `${typeKey}s`];
+  if (handler && !opts.playItem) {
     return await handler(item);
   }
   return await itemHandlers["media"](item);

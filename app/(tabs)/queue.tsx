@@ -1,72 +1,59 @@
-import { changeToIndex, fetchQueue, moveToPosition, queueItems, removeByIndex } from "@/lib/queue";
+import { changeToIndex, fetchQueue, queueItems, removeByIndex, setQueue as setQueueApi } from "@/lib/queue";
 import { QueueItem } from "@/types/musickit";
 import { useIsFocused } from "@react-navigation/native";
 import { useAtom } from "jotai";
 import { useEffect, useMemo, useState } from "react";
-import { Animated, ScrollView, StyleSheet, View } from "react-native";
-import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Button, Dialog, IconButton, List, Portal, Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from 'react-native-safe-area-context';
+import DraggableFlatList, {
+  DragEndParams,
+  RenderItemParams,
+} from "react-native-draggable-flatlist";
 
 export default function Queue() {
   const isFocused = useIsFocused();
   const [queue, setQueue] = useAtom(queueItems);
   const theme = useTheme();
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-
-  function UIQueueView() {
-    return (
-      <View>
-        <Text variant="headlineSmall" style={styles.header}>
-          Up Next
-        </Text>
-        {queue.map((item, idx) => (
-          <UIQueueItem
-            key={idx}
-            item={item}
-            idx={idx}
-            isDragged={draggedIndex === idx}
-            onDragStart={() => setDraggedIndex(idx)}
-            onDragEnd={() => setDraggedIndex(null)}
-          />
-        ))}
-      </View>
-    )
-  }
 
   useEffect(() => {
     if (isFocused) {
       fetchQueue();
     }
-  }, [isFocused])
+  }, [isFocused]);
+
+  const onDragEnd = (params: DragEndParams<QueueItem>) => {
+    setQueue(params.data);
+    const newQueueIds = params.data.map(item => item.id);
+    setQueueApi(newQueueIds);
+  };
 
   if (!isFocused) {
     return null;
   }
+
   return (
-    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <SafeAreaView>
-        {isFocused && <UIQueueView />}
-      </SafeAreaView>
-    </ScrollView>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <DraggableFlatList
+        data={queue}
+        onDragEnd={onDragEnd}
+        keyExtractor={(item) => item.id}
+        renderItem={UIQueueItem}
+        ListHeaderComponent={() => (
+          <Text variant="headlineSmall" style={styles.header}>
+            Up Next
+          </Text>
+        )}
+      />
+    </SafeAreaView>
   );
 }
 
-type UIQueueItemProps = {
-  item: QueueItem;
-  idx: number;
-  isDragged?: boolean;
-  onDragStart?: () => void;
-  onDragEnd?: () => void;
-};
-
-function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueItemProps) {
-  const [queue, setQueue] = useAtom(queueItems);
+function UIQueueItem({ item, drag, isActive }: RenderItemParams<QueueItem>) {
   const [showActions, setShowActions] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
   const theme = useTheme();
-  const translateY = new Animated.Value(0);
-  const scale = new Animated.Value(1);
+  const [queue] = useAtom(queueItems);
+  const idx = queue.findIndex(i => i.id === item.id);
 
   const artworkUri = useMemo(() => {
     return item.attributes.artwork?.url
@@ -74,118 +61,58 @@ function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueIt
       .replace("{w}", "60");
   }, [item]);
 
-  const onGestureEvent = Animated.event(
-    [{ nativeEvent: { translationY: translateY } }],
-    { useNativeDriver: true }
-  );
-
-  const onHandlerStateChange = (event: any) => {
-    if (event.nativeEvent.state === State.BEGAN) {
-      setIsDragging(true);
-      onDragStart?.();
-      Animated.spring(scale, {
-        toValue: 1.05,
-        useNativeDriver: true,
-      }).start();
-    } else if (event.nativeEvent.state === State.END || event.nativeEvent.state === State.CANCELLED) {
-      const { translationY } = event.nativeEvent;
-      const itemHeight = 80; // Approximate height of each item
-      const moveDistance = Math.round(translationY / itemHeight);
-      const newIndex = Math.max(0, Math.min(idx + moveDistance, queue.length - 1));
-
-      if (newIndex !== idx && event.nativeEvent.state === State.END) {
-        moveToPosition(idx, newIndex);
-      }
-
-      Animated.parallel([
-        Animated.spring(translateY, {
-          toValue: 0,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scale, {
-          toValue: 1,
-          useNativeDriver: true,
-        }),
-      ]).start();
-
-      // Delay resetting isDragging to prevent menu from showing
-      setTimeout(() => {
-        setIsDragging(false);
-      }, 100);
-
-      onDragEnd?.();
-    }
-  };
-
   return (
     <>
-      <PanGestureHandler
-        onGestureEvent={onGestureEvent}
-        onHandlerStateChange={onHandlerStateChange}
-      >
-        <Animated.View
-          style={[
-            {
-              transform: [{ translateY }, { scale }],
-              zIndex: isDragged ? 1000 : 1,
-              elevation: isDragged ? 8 : 0,
-            },
-            isDragged && styles.dragging,
-          ]}
-        >
-          <List.Item
-            title={item.attributes.name ?? "Untitled"}
-            description={item.attributes.artistName ?? ""}
-            onPress={() => {
-              changeToIndex(idx);
-            }}
-            left={(props) =>
-              item.attributes.artwork?.url ? (
-                <List.Image
-                  {...props}
-                  source={{ uri: artworkUri }}
-                  style={styles.artwork}
-                />
-              ) : (
-                <List.Icon {...props} icon="music" style={styles.artwork} />
-              )
-            }
-            right={(props) => (
-              <IconButton icon="menu" onPress={() => {
-                setShowActions(true);
-              }} {...props} style={styles.dragHandle} />
-            )}
-            titleStyle={styles.title}
-            descriptionStyle={[styles.description, { color: theme.colors.onSurfaceVariant }]}
-            style={[
-              styles.listItem,
-              isDragged && { backgroundColor: theme.colors.surfaceVariant }
-            ]}
-          />
-        </Animated.View>
-      </PanGestureHandler>
-
-      <View>
-        <Portal>
-          <Dialog visible={showActions} onDismiss={() => setShowActions(false)}>
-            <Dialog.Title>
-              {item.attributes.name ?? "Untitled"}
-            </Dialog.Title>
-            <Dialog.Content>
-              <Button
-                icon="close"
-
-                onPress={() => {
-                  removeByIndex(idx);
-                  setShowActions(false);
-                }}>Remove From Queue</Button>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={() => setShowActions(false)}>Done</Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
+      <View style={[
+        styles.listItemContainer,
+        isActive && styles.dragging,
+        { backgroundColor: isActive ? theme.colors.surfaceVariant : theme.colors.background }
+      ]}>
+        <TouchableOpacity onLongPress={drag} style={styles.dragHandle}>
+          <IconButton icon="drag-horizontal-variant" />
+        </TouchableOpacity>
+        <List.Item
+          title={item.attributes.name ?? "Untitled"}
+          description={item.attributes.artistName ?? ""}
+          onPress={() => changeToIndex(idx)}
+          left={(props) =>
+            item.attributes.artwork?.url ? (
+              <List.Image
+                {...props}
+                source={{ uri: artworkUri }}
+                style={styles.artwork}
+              />
+            ) : (
+              <List.Icon {...props} icon="music" style={styles.artwork} />
+            )
+          }
+          right={(props) => (
+            <IconButton icon="menu" onPress={() => setShowActions(true)} {...props} />
+          )}
+          titleStyle={styles.title}
+          descriptionStyle={[styles.description, { color: theme.colors.onSurfaceVariant }]}
+          style={styles.listItem}
+        />
       </View>
+
+      <Portal>
+        <Dialog visible={showActions} onDismiss={() => setShowActions(false)}>
+          <Dialog.Title>
+            {item.attributes.name ?? "Untitled"}
+          </Dialog.Title>
+          <Dialog.Content>
+            <Button
+              icon="close"
+              onPress={() => {
+                removeByIndex(idx);
+                setShowActions(false);
+              }}>Remove From Queue</Button>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setShowActions(false)}>Done</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </>
   );
 }

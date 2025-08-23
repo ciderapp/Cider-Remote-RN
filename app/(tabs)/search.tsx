@@ -74,9 +74,14 @@ export default function SearchPage() {
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                     onEndEditing={handleSearch}
+                    onKeyPress={({ nativeEvent }) => {
+                        if (nativeEvent.key === "Enter") {
+                            handleSearch();
+                        }
+                    }}
                     mode="outlined" label="Albums, Songs, Lyrics, and More"></TextInput>
 
-                <Card style={{marginTop: 16}}>
+                <Card style={{ marginTop: 16 }}>
                     <Card.Content>
                         <List.Section>
                             {sortOrder
