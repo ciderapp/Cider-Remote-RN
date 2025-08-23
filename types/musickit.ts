@@ -1,16 +1,24 @@
 // Suggestion for types/index.ts
 
+export type MediaItemArtwork = {
+  hasP3: boolean;
+  height: number | null;
+  url: string;
+  width: number | null;
+  bgColor: string | null;
+  textColor1: string | null;
+  textColor2: string | null;
+  textColor3: string | null;
+  textColor4: string | null;
+};
+
 export type MediaItem = {
   id: string;
   type: string;
   attributes: {
     albumName: string;
     artistName: string;
-    artwork: {
-      width: number;
-      height: number;
-      url: string;
-    };
+    artwork: MediaItemArtwork;
     audioLocale: string;
     audioTraits: string[];
     composerName: string;
@@ -136,12 +144,7 @@ export type LibraryPlaylist = {
   type: "library-playlists";
   href: string;
   attributes: {
-    artwork: {
-      hasP3: boolean;
-      height: number | null;
-      url: string;
-      width: number | null;
-    };
+    artwork: MediaItemArtwork;
     canDelete: boolean;
     canEdit: boolean;
     dateAdded: string;

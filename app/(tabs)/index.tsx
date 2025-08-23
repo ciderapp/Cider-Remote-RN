@@ -1,14 +1,11 @@
-import { NowPlayingArtwork } from "@/components/Artwork";
 import { ArtworkBlur } from "@/components/ArtworkBlur";
-import { NowPlayingMetadata } from "@/components/NowPlayingMetadata";
-import { PlaybackButtons } from "@/components/PlaybackButtons";
-import { ProgressBar } from "@/components/ProgressBar";
+import { NowPlayingView } from "@/components/NowPlayingView";
 import { IOState } from "@/lib/io";
 import { nowPlayingItem } from "@/lib/playback-control";
 import { useRouter } from "expo-router";
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
-import { Dimensions, ScrollView, View } from "react-native";
+import { Dimensions, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -58,60 +55,7 @@ export default function HomeScreen() {
       {ready && (
         <>
           {connected && nowPlaying && <ArtworkBlur />}
-          <ScrollView contentContainerStyle={{ flex: 1, width: "100%" }}>
-            <View
-              style={{
-                flex: 1,
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-                overflow: "hidden",
-              }}
-            >
-              {connected && nowPlaying && (
-                <View
-                  style={{
-                    display: "flex",
-                    flexDirection:
-                      orientation === "landscape" ? "row" : "column",
-                    width: "100%",
-                    height: "100%",
-                    justifyContent: "space-evenly",
-                    alignItems: "center",
-                    gap: orientation === "landscape" ? 32 : undefined,
-                  }}
-                >
-                  <View
-                    style={{
-                      marginTop: orientation == 'portrait' ? '16%' : 0,
-                    }}
-                  >
-                    <NowPlayingArtwork />
-                  </View>
-                  <View
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      flex: 1,
-                      width: orientation === "landscape" ? undefined : "100%",
-                      gap: 16,
-                    }}
-                  >
-                    <View style={{ flexShrink: 1 }}>
-                      <NowPlayingMetadata nowPlaying={nowPlaying} />
-                    </View>
-
-                    <View>
-                      <ProgressBar />
-                      <PlaybackButtons />
-                    </View>
-                  </View>
-                </View>
-              )}
-            </View>
-          </ScrollView>
+          <NowPlayingView />
           {!connected && (
             <View
               style={{

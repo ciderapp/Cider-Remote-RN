@@ -1,105 +1,62 @@
-import { nowPlayingItem } from "@/lib/playback-control";
+import { MediaItemArtwork } from "@/types/musickit";
+import { FormatArtworkOptions, formatArtworkUrl } from "@/utils/artwork";
 import { Image } from "expo-image";
-import { useAtomValue } from "jotai";
-import { useEffect, useMemo, useState } from "react";
-import { Dimensions, StyleSheet, View } from "react-native";
-import { Icon, useTheme } from "react-native-paper";
+import { useMemo } from "react";
+import { ImageStyle, StyleSheet, View } from "react-native";
 
-export function NowPlayingArtwork() {
-  const nowPlaying = useAtomValue(nowPlayingItem);
-  const [screenDimensions, setScreenDimensions] = useState(() => Dimensions.get('window'));
-  
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setScreenDimensions(window);
-    });
-
-    return () => subscription?.remove();
-  }, []);
-
-  if (!nowPlaying) return null;
-
-  const artworkUri = useMemo(() => {
-    if(!nowPlaying.artwork) return;
-    return nowPlaying.artwork?.url?.replace('{w}', '600').replace('{h}', '600')
-  }, [nowPlaying]);
-  
-  const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 600) * 0.8;
-
-  return (
-    <View style={styles.container}>
-      <Image
-        source={{ uri: artworkUri }}
-        style={[styles.artwork, { width: artworkSize, height: artworkSize }]}
-        contentFit="cover"
-        transition={500}
-        cachePolicy="memory-disk"
-        recyclingKey={artworkUri}
-        placeholderContentFit="cover"
-      />
-    </View>
-  );
+type ArtworkProps = {
+    artwork: MediaItemArtwork
+    options: Partial<FormatArtworkOptions>;
+    style?: ImageStyle;
+    mode?: 'none' | 'list-item' | 'page';
 }
 
-export function PlaceholderArtwork() {
-  const theme = useTheme();
-  const [screenDimensions, setScreenDimensions] = useState(() => Dimensions.get('window'));
-  
-  useEffect(() => {
-    const subscription = Dimensions.addEventListener('change', ({ window }) => {
-      setScreenDimensions(window);
-    });
+export function Artwork(props: ArtworkProps) {
 
-    return () => subscription?.remove();
-  }, []);
+    const artworkUri = useMemo(() => {
+        if (!props.artwork.url) return;
+        return formatArtworkUrl(props.artwork.url, props.options);
+    }, [props.artwork.url, props.options]);
 
-  const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 600) * 0.8;
-  
-  return (
-    <View style={[
-      styles.container, 
-      styles.placeholder, 
-      { 
-        backgroundColor: theme.colors.surfaceVariant,
-        width: artworkSize,
-        height: artworkSize
-      }
-    ]}>
-      <Icon 
-        source="music-note" 
-        size={60} 
-        color={theme.colors.onSurfaceVariant}
-      />
-    </View>
-  );
+    const modeStyle = useMemo(() => {
+        switch (props.mode) {
+            case 'list-item':
+            return styles.listItemArtwork;
+            case 'page':
+            return styles.pageArtwork;
+            default:
+            return {};
+        }
+    }, [props.mode])
+
+    return (
+        <View style={props.style}>
+            <Image
+                source={{ uri: artworkUri }}
+                style={[
+                    {
+                        width: '100%',
+                        height: '100%',
+                    },
+                    modeStyle
+                ]}
+                contentFit="cover"
+                transition={500}
+                cachePolicy="memory-disk"
+                recyclingKey={artworkUri}
+                placeholderContentFit="cover"
+            />
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 24,
-  },
-  artwork: {
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 8,
+    listItemArtwork: {
+        borderRadius: 3,
+        overflow: 'hidden',
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 12,
-  },
-  placeholder: {
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 6,
-  },
-});
+    pageArtwork: {
+        borderRadius: 12,
+        overflow: 'hidden',
+    }
+})

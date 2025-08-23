@@ -1,6 +1,7 @@
 import { interact } from "@/lib/interact";
 import { searchCatalog } from "@/lib/search";
 import { ItemTypes, SearchResponse } from "@/types/search";
+import { formatArtworkUrl } from "@/utils/artwork";
 import { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { Card, List, Text, TextInput } from "react-native-paper";
@@ -12,11 +13,6 @@ export default function SearchPage() {
     const [meta, setMeta] = useState<SearchResponse['meta'] | undefined>();
 
     const [searchQuery, setSearchQuery] = useState<string>("");
-
-    function formatArtworkUrl(url: string | undefined) {
-        if (!url) return undefined;
-        return url.replace("{w}", "60").replace("{h}", "60").replace('{f}', 'webp').replace('{c}', 'bb');
-    }
 
     const sortOrder = useMemo(() => {
         return meta?.results.order ?? [];

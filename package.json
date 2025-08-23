@@ -58,6 +58,7 @@
     "@types/events": "^3",
     "@types/react": "~19.0.10",
     "@types/xml2js": "^0.4.14",
+    "babel-plugin-react-compiler": "19.0.0-beta-af1b7da-20250417",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
     "typescript": "~5.8.3"

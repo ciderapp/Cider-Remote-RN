@@ -1093,7 +1093,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.25.2, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.3.3":
+"@babel/types@npm:^7.0.0, @babel/types@npm:^7.20.0, @babel/types@npm:^7.20.7, @babel/types@npm:^7.25.2, @babel/types@npm:^7.26.0, @babel/types@npm:^7.27.1, @babel/types@npm:^7.27.3, @babel/types@npm:^7.28.2, @babel/types@npm:^7.3.3":
   version: 7.28.2
   resolution: "@babel/types@npm:7.28.2"
   dependencies:
@@ -3147,6 +3147,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-plugin-react-compiler@npm:19.0.0-beta-af1b7da-20250417":
+  version: 19.0.0-beta-af1b7da-20250417
+  resolution: "babel-plugin-react-compiler@npm:19.0.0-beta-af1b7da-20250417"
+  dependencies:
+    "@babel/types": "npm:^7.26.0"
+  checksum: 10c0/dee0a398be02afc6fa35199ef4d8c30025adcaa7056f56130601254c45d8ee8f06730d4e17e26a3f7f0711eef1323a1e6c01a76ac7516f0c34766bfa27fc92e1
+  languageName: node
+  linkType: hard
+
 "babel-plugin-react-native-web@npm:~0.19.13":
   version: 0.19.13
   resolution: "babel-plugin-react-native-web@npm:0.19.13"
@@ -3571,6 +3580,7 @@ __metadata:
     "@types/events": "npm:^3"
     "@types/react": "npm:~19.0.10"
     "@types/xml2js": "npm:^0.4.14"
+    babel-plugin-react-compiler: "npm:19.0.0-beta-af1b7da-20250417"
     eslint: "npm:^9.25.0"
     eslint-config-expo: "npm:~9.2.0"
     events: "npm:^3.3.0"
