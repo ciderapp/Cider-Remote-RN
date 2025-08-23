@@ -47,6 +47,8 @@ export default function RootLayout() {
                 presentation: 'card',
                 animation: 'slide_from_bottom',
                 title: 'Now Playing',
+                headerShown: false,
+                animationMatchesGesture: true,
               }}
             />
             <Stack.Screen
