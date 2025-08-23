@@ -1,8 +1,6 @@
-import { nowPlayingItem } from "@/lib/playback-control";
 import { MediaItemArtwork } from "@/types/musickit";
 import { FormatArtworkOptions, formatArtworkUrl } from "@/utils/artwork";
 import { Image } from "expo-image";
-import { useAtomValue } from "jotai";
 import { useMemo } from "react";
 import { ImageStyle, StyleSheet, View } from "react-native";
 
@@ -14,13 +12,11 @@ type ArtworkProps = {
 }
 
 export function Artwork(props: ArtworkProps) {
-    const nowPlaying = useAtomValue(nowPlayingItem);
-    if (!nowPlaying) return null;
 
     const artworkUri = useMemo(() => {
-        if (!nowPlaying.artwork) return;
+        if (!props.artwork.url) return;
         return formatArtworkUrl(props.artwork.url, props.options);
-    }, [nowPlaying]);
+    }, [props.artwork.url, props.options]);
 
     const modeStyle = useMemo(() => {
         switch (props.mode) {
