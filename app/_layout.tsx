@@ -44,7 +44,7 @@ export default function RootLayout() {
             <Stack.Screen
               name="modals/now-playing"
               options={{
-                presentation: 'card',
+                presentation: 'transparentModal',
                 animation: 'slide_from_bottom',
                 title: 'Now Playing',
                 headerShown: false,
