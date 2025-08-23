@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 24,
   },
   artwork: {
     ...ArtworkStyles.artworkShadow
