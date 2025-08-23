@@ -19,10 +19,13 @@ export default function AlbumPage() {
     const router = useRouter();
 
     const id = useMemo(() => {
-        return (route.params as { albumId: string }).albumId;
+        return (route.params as { id: string }).id;
     }, [route])
 
     const href = useMemo(() => {
+        if (id.includes('.')) {
+            return `/v1/me/library/albums/${id}`;
+        }
         return `/v1/catalog/us/albums/${id}`;
     }, [id])
 

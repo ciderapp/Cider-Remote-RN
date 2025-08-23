@@ -22,8 +22,10 @@ export const playActionPromise = {
 const itemHandlers: {
   [key: string]: (item: ItemTypes, opts: InteractOptions) => Promise<void>;
 } = {
-  playlists: async (item) => {},
-  albums: async (item) => {
+  playlists: async (item, opts) => {
+    router.push(`/playlists/${item.id}`);
+  },
+  albums: async (item, opts) => {
     router.push(`/albums/${item.id}`);
   },
   media: async (item, opts) => {
