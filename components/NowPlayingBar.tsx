@@ -88,7 +88,10 @@ export function NowPlayingBar() {
         nowPlaying && (
             <>
                 <Portal>
-                    {opened && (
+                    <View style={{
+                        flex: 1,
+                        pointerEvents: opened ? 'auto' : 'none'
+                    }}>
                         <PanGestureHandler
                             onGestureEvent={onOverlayGestureEvent}
                             onHandlerStateChange={onOverlayHandlerStateChange}
@@ -116,7 +119,7 @@ export function NowPlayingBar() {
                                 </Surface>
                             </Animated.View>
                         </PanGestureHandler>
-                    )}
+                    </View>
                 </Portal>
                 <PanGestureHandler
                     onGestureEvent={onGestureEvent}
