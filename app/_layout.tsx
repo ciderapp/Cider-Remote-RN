@@ -8,9 +8,15 @@ import { useMaterialYouTheme } from "@/hooks/useMaterialYouTheme";
 import { MaterialYouService } from "@assembless/react-native-material-you";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
+import { configureReanimatedLogger } from "react-native-reanimated";
+
+configureReanimatedLogger({
+  strict: false, // Reanimated runs in strict mode by default
+});
 
 function ThemedProviders() {
   const { paperTheme, navTheme } = useMaterialYouTheme();
+  
   return (
     <PaperProvider theme={paperTheme}>
       <ThemeProvider value={navTheme}>
