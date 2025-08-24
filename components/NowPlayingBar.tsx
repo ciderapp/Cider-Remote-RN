@@ -1,5 +1,4 @@
 import { isPlaying as isPlayingAtom, nowPlayingItem, playPause } from "@/lib/playback-control";
-import { useRouter } from "expo-router";
 import { useAtomValue } from "jotai";
 import { useEffect, useRef, useState } from 'react';
 import { GestureResponderEvent, StyleSheet, View } from "react-native";
@@ -16,7 +15,6 @@ export function NowPlayingBar() {
     const nowPlaying = useAtomValue(nowPlayingItem);
     const isPlaying = useAtomValue(isPlayingAtom);
 
-    const router = useRouter();
     const dragY = useRef(0);
     const [opened, setOpened] = useState(false);
     const translateY = useSharedValue(0);
@@ -95,7 +93,7 @@ export function NowPlayingBar() {
         if (event.nativeEvent.state === State.END) {
             // If user swiped up enough (negative Y)
             if (dragY.current < -40) {
-                router.push('/modals/now-playing');
+                handlePress();
             }
             dragY.current = 0;
         }
