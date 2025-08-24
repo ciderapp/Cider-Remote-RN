@@ -1,128 +1,130 @@
 import { interact } from "@/lib/interact";
 import { searchCatalog } from "@/lib/search";
 import { ItemTypes, SearchResponse } from "@/types/search";
-import { formatArtworkUrl } from "@/utils/artwork";
 import { useMemo, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
-import { Card, List, Text, TextInput } from "react-native-paper";
+import { ScrollView, StyleSheet, View } from "react-native";
+import { Card, List, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function SearchPage() {
+  const [results, setResults] = useState<
+    SearchResponse["results"] | undefined
+  >();
+  const [meta, setMeta] = useState<SearchResponse["meta"] | undefined>();
 
-    const [results, setResults] = useState<SearchResponse['results'] | undefined>();
-    const [meta, setMeta] = useState<SearchResponse['meta'] | undefined>();
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-    const [searchQuery, setSearchQuery] = useState<string>("");
+  function formatArtworkUrl(url: string | undefined) {
+    if (!url) return undefined;
+    return url
+      .replace("{w}", "60")
+      .replace("{h}", "60")
+      .replace("{f}", "webp")
+      .replace("{c}", "bb");
+  }
 
-    const sortOrder = useMemo(() => {
-        return meta?.results.order ?? [];
-    }, [meta])
+  const sortOrder = useMemo(() => {
+    return meta?.results.order ?? [];
+  }, [meta]);
 
-    async function handleSearch() {
-        const data = await searchCatalog(searchQuery);
-        if (!data) return;
-        setResults(data.results);
-        setMeta(data.meta);
-    }
+  async function handleSearch() {
+    const data = await searchCatalog(searchQuery);
+    if (!data) return;
+    setResults(data.results);
+    setMeta(data.meta);
+  }
 
-    // Flatten results for FlatList: each entry is either a section header or an item
-    const flatResults = useMemo(() => {
-        if (!results || !sortOrder.length) return [];
-        const items: Array<{ type: "header" | "item", key: string, label?: string, item?: ItemTypes }> = [];
-        sortOrder.forEach(type => {
-            const section = results[type as keyof SearchResponse['results']];
-            if (section?.data?.length) {
-                items.push({ type: "header", key: `header-${type}`, label: type.charAt(0).toUpperCase() + type.slice(1) + " Results" });
-                section.data.forEach((item, idx) => {
-                    items.push({ type: "item", key: `${type}-${idx}`, item: item as ItemTypes });
-                });
-            }
-        });
-        return items;
-    }, [results, sortOrder]);
-
-    function ResultListItem({
-        item,
-        formatArtworkUrl,
-        styles,
-    }: {
-        item: ItemTypes,
-        formatArtworkUrl: (url: string | undefined) => string | undefined,
-        styles: any,
-    }) {
-        return (
-            <List.Item
-                left={(props) =>
-                    item.attributes.artwork?.url ? (
-                        <List.Image
-                            {...props}
-                            source={{ uri: formatArtworkUrl(item.attributes.artwork?.url) }}
-                            style={styles.artwork}
-                        />
-                    ) : (
-                        <List.Icon {...props} icon="music" style={styles.artwork} />
-                    )
-                }
-                title={item.attributes.name}
-                description={item.type}
-                onPress={() => { interact({ item }) }}
-            />
-        );
-    }
-
+  function ResultListItem({
+    item,
+    formatArtworkUrl,
+    styles,
+  }: {
+    item: ItemTypes;
+    formatArtworkUrl: (url: string | undefined) => string | undefined;
+    styles: any;
+  }) {
     return (
-        <SafeAreaView>
-            <View style={{
-                paddingHorizontal: 16,
-            }}>
-                <TextInput
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                    onEndEditing={handleSearch}
-                    onKeyPress={({ nativeEvent }) => {
-                        if (nativeEvent.key === "Enter") {
-                            handleSearch();
-                        }
-                    }}
-                    mode="outlined" label="Albums, Songs, Lyrics, and More"></TextInput>
+      <List.Item
+        left={(props) =>
+          item.attributes.artwork?.url ? (
+            <List.Image
+              {...props}
+              source={{ uri: formatArtworkUrl(item.attributes.artwork?.url) }}
+              style={styles.artwork}
+            />
+          ) : (
+            <List.Icon {...props} icon="music" style={styles.artwork} />
+          )
+        }
+        title={item.attributes.name}
+        description={item.type}
+        onPress={() => {
+          interact({ item });
+        }}
+      />
+    );
+  }
 
-                <Card style={{ marginTop: 16 }}>
-                    <Card.Content>
-                        <FlatList
-                            data={flatResults}
-                            keyExtractor={item => item.key}
-                            renderItem={({ item }) => {
-                                if (item.type === "header") {
-                                    return <List.Subheader>{item.label}</List.Subheader>;
-                                }
-                                if (item.type === "item" && item.item) {
-                                    return (
-                                        <ResultListItem
-                                            item={item.item}
-                                            formatArtworkUrl={formatArtworkUrl}
-                                            styles={styles}
-                                        />
-                                    );
-                                }
-                                return null;
-                            }}
-                            ListEmptyComponent={<Text>No results</Text>}
-                        />
-                    </Card.Content>
-                </Card>
-            </View>
-        </SafeAreaView>
-    )
+  return (
+    <SafeAreaView>
+      <ScrollView>
+        <View
+          style={{
+            paddingHorizontal: 16,
+            gap: 32,
+          }}
+        >
+          <TextInput
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === "Enter") {
+                handleSearch();
+              }
+            }}
+            mode="outlined"
+            label="Albums, Songs, Lyrics, and More"
+          ></TextInput>
+
+          <Card>
+            <Card.Content>
+              <List.Section>
+                {sortOrder
+                  .filter(
+                    (type) =>
+                      (results ?? {})[type as keyof SearchResponse["results"]]
+                  )
+                  .map((type) => (
+                    <View key={type}>
+                      <List.Subheader>
+                        {type.charAt(0).toUpperCase() + type.slice(1)} Results
+                      </List.Subheader>
+                      {results?.[
+                        type as keyof SearchResponse["results"]
+                      ]?.data?.map((item, idx) => (
+                        <View key={item.id ?? idx}>
+                          <ResultListItem
+                            item={item as ItemTypes}
+                            formatArtworkUrl={formatArtworkUrl}
+                            styles={styles}
+                          />
+                        </View>
+                      ))}
+                    </View>
+                  ))}
+              </List.Section>
+            </Card.Content>
+          </Card>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
-
-
 const styles = StyleSheet.create({
-
-    artwork: {
-        borderRadius: 8,
-        width: 60,
-        height: 60,
-    },
-
+  artwork: {
+    borderRadius: 8,
+    width: 60,
+    height: 60,
+  },
 });
