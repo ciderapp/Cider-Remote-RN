@@ -233,10 +233,10 @@ export function ProgressBar() {
         />
       </View>
       <View style={styles.timeContainer}>
-        <Text variant="bodySmall" style={[styles.timeText, { color: theme.colors.onSurfaceVariant }]}>
+        <Text variant="labelSmall" style={[styles.timeText, { color: theme.colors.onSurfaceVariant }]}>
           {formatTime(currentDisplayProgress)}
         </Text>
-        <Text variant="bodySmall" style={[styles.timeText, { color: theme.colors.onSurfaceVariant }]}>
+        <Text variant="labelSmall" style={[styles.timeText, { color: theme.colors.onSurfaceVariant }]}>
           {formatRemainingTime(currentDisplayProgress, duration)}
         </Text>
       </View>

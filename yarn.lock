@@ -1248,6 +1248,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@expo-google-fonts/roboto-flex@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@expo-google-fonts/roboto-flex@npm:0.4.0"
+  checksum: 10c0/a59dc5b0e31e2c3b7d1a4b059149c9f93a99578eb1200921a3420f5c50716f925ca763554efe934d07965123c2c7625e77264db51c943dfa1082b4e312c0adb8
+  languageName: node
+  linkType: hard
+
+"@expo-google-fonts/roboto@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@expo-google-fonts/roboto@npm:0.4.0"
+  checksum: 10c0/ee9de07768b430c3f5b813c8d244b54fdc00e73dd9ffd99deeba2e06588dd7c7897620c6e75e585d86898c0fa791456f5b5e5a91dc82e02d1f94fb0b2f79c304
+  languageName: node
+  linkType: hard
+
 "@expo/cli@npm:0.24.20":
   version: 0.24.20
   resolution: "@expo/cli@npm:0.24.20"
@@ -3589,6 +3603,8 @@ __metadata:
   dependencies:
     "@assembless/react-native-material-you": "npm:^1.0.0-beta.4"
     "@babel/core": "npm:^7.25.2"
+    "@expo-google-fonts/roboto": "npm:^0.4.0"
+    "@expo-google-fonts/roboto-flex": "npm:^0.4.0"
     "@expo/vector-icons": "npm:^14.1.0"
     "@react-native-async-storage/async-storage": "npm:2.1.2"
     "@react-native-community/slider": "npm:^5.0.1"

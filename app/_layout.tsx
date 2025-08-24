@@ -1,3 +1,5 @@
+import { Roboto_400Regular, Roboto_500Medium, Roboto_700Bold, Roboto_900Black, useFonts as useRobotoFonts } from "@expo-google-fonts/roboto";
+import { RobotoFlex_400Regular, useFonts as useRobotoFlexFonts } from "@expo-google-fonts/roboto-flex";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
@@ -65,9 +67,18 @@ function ThemedProviders() {
 }
 
 export default function RootLayout() {
-  const [loaded] = useFonts({
+  const [localLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+    RobotoFlex: require("../assets/fonts/RobotoFlex.ttf"),
   });
+  const [googleFlexLoaded] = useRobotoFlexFonts({ RobotoFlex_400Regular });
+  const [googleRobotoLoaded] = useRobotoFonts({
+    Roboto_400Regular,
+    Roboto_500Medium,
+    Roboto_700Bold,
+    Roboto_900Black,
+  });
+  const loaded = localLoaded && googleFlexLoaded && googleRobotoLoaded;
 
   if (!loaded) {
     // Async font loading only occurs in development.

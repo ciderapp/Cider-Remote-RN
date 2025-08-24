@@ -11,7 +11,7 @@ export function NowPlayingView() {
 
     const nowPlaying = useAtomValue(nowPlayingItem);
 
-    const [orientation, setOrientation] = useState<"portrait" | "landscape">(
+    const [orientation] = useState<"portrait" | "landscape">(
         Dimensions.get("window").width > Dimensions.get("window").height
             ? "landscape"
             : "portrait"
@@ -56,6 +56,7 @@ export function NowPlayingView() {
                             flex: 1,
                             width: orientation === "landscape" ? undefined : "100%",
                             gap: 16,
+                            paddingHorizontal: 16,
                         }}
                     >
                         <View style={{ flexShrink: 1 }}>

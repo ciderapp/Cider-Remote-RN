@@ -2,7 +2,7 @@ import { useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, Theme as NavigationTheme } from "@react-navigation/native";
 import { useMemo } from "react";
 import { Platform } from "react-native";
-import { MD3DarkTheme, MD3LightTheme, MD3Theme } from "react-native-paper";
+import { MD3DarkTheme, MD3LightTheme, MD3Theme, configureFonts } from "react-native-paper";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 
@@ -68,8 +68,47 @@ export function useMaterialYouTheme(): Themes {
       ? (isDark ? neutral2![6] : neutral2![4])
       : basePaper.colors.onSurfaceVariant;
 
+    const baseFonts = configureFonts({
+      config: {
+        fontFamily: Platform.select({
+          ios: 'RobotoFlex',
+          android: 'RobotoFlex',
+          web: 'RobotoFlex, Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif',
+          default: 'RobotoFlex',
+        }) as string,
+      },
+    });
+
+    const expressiveFonts = {
+      ...baseFonts,
+      displaySmall: {
+        ...baseFonts.displaySmall,
+        letterSpacing: -0.25,
+      },
+      titleLarge: {
+        ...baseFonts.titleLarge,
+        letterSpacing: 0.15,
+        fontFamily: Platform.select({ ios: 'Roboto', android: 'Roboto', default: baseFonts.titleLarge.fontFamily }) as string,
+        fontWeight: '700',
+      },
+      labelLarge: {
+        ...baseFonts.labelLarge,
+        letterSpacing: 0.2,
+      },
+      labelSmall: {
+        ...baseFonts.labelSmall,
+        letterSpacing: 0.5,
+      },
+      bodyLarge: {
+        ...baseFonts.bodyLarge,
+        fontFamily: Platform.select({ ios: 'Roboto', android: 'Roboto', default: baseFonts.bodyLarge.fontFamily }) as string,
+        fontWeight: '500',
+      },
+    } as MD3Theme['fonts'];
+
     const paperTheme: MD3Theme = {
       ...basePaper,
+      fonts: expressiveFonts,
       colors: {
         ...basePaper.colors,
         primary,
