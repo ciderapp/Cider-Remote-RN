@@ -5,7 +5,6 @@ import React from "react";
 import { Platform, View } from "react-native";
 import { BottomNavigation, Icon, useTheme } from "react-native-paper";
 
-
 export default function TabLayout() {
   const theme = useTheme();
 
@@ -13,9 +12,7 @@ export default function TabLayout() {
     <Tabs
       tabBar={({ navigation, state, descriptors, insets }) => (
         <View>
-          <View style={{
-            display: state.routes[state.index]?.name !== 'index' ? 'flex' : 'none'
-          }}>
+          <View style={{}}>
             <NowPlayingBar />
           </View>
           <BottomNavigation.Bar
@@ -25,7 +22,7 @@ export default function TabLayout() {
             style={{ backgroundColor: theme.colors.surface }}
             onTabPress={({ route, preventDefault }) => {
               const event = navigation.emit({
-                type: 'tabPress',
+                type: "tabPress",
                 target: route.key,
                 canPreventDefault: true,
               });
@@ -49,11 +46,11 @@ export default function TabLayout() {
             getLabelText={({ route }) => {
               const { options } = descriptors[route.key];
               const label =
-                typeof options.tabBarLabel === 'string'
+                typeof options.tabBarLabel === "string"
                   ? options.tabBarLabel
-                  : typeof options.title === 'string'
-                    ? options.title
-                    : route.name;
+                  : typeof options.title === "string"
+                  ? options.title
+                  : route.name;
 
               return label;
             }}
@@ -64,9 +61,9 @@ export default function TabLayout() {
         tabBarActiveTintColor: theme.colors.primary,
         headerShown: false,
         freezeOnBlur: true,
-        animation: 'shift',
+        animation: "shift",
         transitionSpec: {
-          animation: 'spring',
+          animation: "spring",
           config: {
             stiffness: 1000,
             damping: 500,
@@ -88,30 +85,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Now Playing",
+          title: "Home",
           tabBarIcon: ({ color }) => (
-            <Icon size={24} source="play-circle-outline" color={color} />
-          ),
-          animation: "shift",
-        }}
-      />
-
-      <Tabs.Screen
-        name="lyrics"
-        options={{
-          title: "Lyrics",
-          tabBarIcon: ({ color }) => (
-            <Icon size={24} source="comment-processing-outline" color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="queue"
-        options={{
-          title: "Queue",
-          tabBarIcon: ({ color }) => (
-            <Icon size={24} source="format-list-bulleted" color={color} />
+            <Icon size={24} source="home" color={color} />
           ),
           animation: "shift",
         }}

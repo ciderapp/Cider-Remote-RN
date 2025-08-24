@@ -1,12 +1,10 @@
-import { ArtworkBlur } from "@/components/ArtworkBlur";
-import { NowPlayingView } from "@/components/NowPlayingView";
 import { IOState } from "@/lib/io";
 import { nowPlayingItem } from "@/lib/playback-control";
 import { useRouter } from "expo-router";
 import { useAtom, useAtomValue } from "jotai";
 import { useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { Button, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
@@ -45,17 +43,20 @@ export default function HomeScreen() {
     <SafeAreaView
       style={{
         flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
+        padding: 16,
       }}
     >
       {ready && (
         <>
-          {connected && nowPlaying && <ArtworkBlur />}
-          <NowPlayingView />
+          <Text
+            style={{
+              padding: 16,
+              fontWeight: "bold",
+            }}
+            variant="displayMedium"
+          >
+            Home
+          </Text>
           {!connected && (
             <View
               style={{
@@ -78,14 +79,18 @@ export default function HomeScreen() {
                 onChangeText={setApiToken}
                 mode="outlined"
               />
-              <Button mode="contained" onPress={IOState.connect} disabled={!apiToken}>
+              <Button
+                mode="contained"
+                onPress={IOState.connect}
+                disabled={!apiToken}
+              >
                 Connect
               </Button>
-              <Button onPress={
-                () => {
-                  router.push('/modals/connect-qr');
-                }
-              }>
+              <Button
+                onPress={() => {
+                  router.push("/modals/connect-qr");
+                }}
+              >
                 Scan
               </Button>
             </View>
