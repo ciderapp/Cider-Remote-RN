@@ -13,7 +13,11 @@ export default function TabLayout() {
     <Tabs
       tabBar={({ navigation, state, descriptors, insets }) => (
         <View>
-          {state.routes[state.index]?.name !== 'index' && <NowPlayingBar />}
+          <View style={{
+            display: state.routes[state.index]?.name !== 'index' ? 'flex' : 'none'
+          }}>
+            <NowPlayingBar />
+          </View>
           <BottomNavigation.Bar
             navigationState={state}
             safeAreaInsets={insets}
