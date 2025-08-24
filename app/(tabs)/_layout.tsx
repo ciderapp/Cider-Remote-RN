@@ -1,15 +1,13 @@
 import { NowPlayingBar } from "@/components/NowPlayingBar";
-import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { CommonActions } from "@react-navigation/native";
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform, View } from "react-native";
-import { BottomNavigation, Icon } from "react-native-paper";
+import { BottomNavigation, Icon, useTheme } from "react-native-paper";
 
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  const theme = useTheme();
 
   return (
     <Tabs
@@ -19,6 +17,8 @@ export default function TabLayout() {
           <BottomNavigation.Bar
             navigationState={state}
             safeAreaInsets={insets}
+            inactiveColor={theme.colors.onSurface}
+            style={{ backgroundColor: theme.colors.surface }}
             onTabPress={({ route, preventDefault }) => {
               const event = navigation.emit({
                 type: 'tabPress',
@@ -57,7 +57,7 @@ export default function TabLayout() {
         </View>
       )}
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: theme.colors.primary,
         headerShown: false,
         freezeOnBlur: true,
         animation: 'shift',

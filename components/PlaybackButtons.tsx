@@ -51,44 +51,49 @@ export function PlaybackButtons() {
         <IconButton
           icon={isShuffleOn ? "shuffle" : "shuffle-disabled"}
           size={24}
-          iconColor={
-            isShuffleOn ? theme.colors.primary : theme.colors.onSurfaceVariant
-          }
+          mode="contained-tonal"
+          selected={isShuffleOn}
           onPress={handleShuffle}
+          style={styles.compactIcon}
         />
 
         <IconButton
           icon="skip-previous"
           size={36}
-          iconColor={theme.colors.onSurface}
+          mode="contained-tonal"
+          iconColor={theme.colors.onSecondaryContainer}
           onPress={handleSkipPrevious}
-          style={styles.skipButton}
+          style={[styles.skipButton, styles.blockButton]}
+          contentStyle={styles.blockButtonContent}
         />
 
         <IconButton
-          icon={isPlaying ? "pause-circle" : "play-circle"}
-          size={72}
-          iconColor={theme.colors.onSurface}
+          icon={isPlaying ? "pause" : "play"}
+          size={48}
+          containerColor={theme.colors.primary}
+          iconColor="#FFFFFF"
           onPress={handlePlayPause}
+          style={styles.primaryAction}
+          contentStyle={styles.primaryActionContent}
         />
 
         <IconButton
           icon="skip-next"
           size={36}
-          iconColor={theme.colors.onSurface}
+          mode="contained-tonal"
+          iconColor={theme.colors.onSecondaryContainer}
           onPress={handleSkipNext}
-          style={styles.skipButton}
+          style={[styles.skipButton, styles.blockButton]}
+          contentStyle={styles.blockButtonContent}
         />
 
         <IconButton
           icon={repeatIcon}
           size={24}
-          iconColor={
-            repeatMode !== 0
-              ? theme.colors.primary
-              : theme.colors.onSurfaceVariant
-          }
+          mode="contained-tonal"
+          selected={repeatMode !== 0}
           onPress={handleRepeat}
+          style={styles.compactIcon}
         />
       </View>
     </View>
@@ -97,15 +102,15 @@ export function PlaybackButtons() {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 32,
-    paddingVertical: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     alignItems: "center",
   },
   primaryControls: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 0,
+    gap: 8,
   },
   playButton: {
     borderRadius: 36,
@@ -120,5 +125,26 @@ const styles = StyleSheet.create({
   },
   skipButton: {
     borderRadius: 18,
+  },
+  blockButton: {
+    borderRadius: 18,
+    width: 64,
+    height: 56,
+  },
+  blockButtonContent: {
+    width: 64,
+    height: 56,
+  },
+  primaryAction: {
+    borderRadius: 22,
+    width: 108,
+    height: 72,
+  },
+  primaryActionContent: {
+    width: 108,
+    height: 72,
+  },
+  compactIcon: {
+    margin: 0,
   },
 });

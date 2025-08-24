@@ -8,10 +8,11 @@ import { useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
-import { Button, IconButton, MD3Colors, Text } from "react-native-paper";
+import { Button, IconButton, Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AlbumPage() {
+    const theme = useTheme();
     const [tracks, setTracks] = useState<Song[]>([]);
     const [item, setItem] = useState<Album>();
 
@@ -120,7 +121,7 @@ export default function AlbumPage() {
                         <Text
                             style={{
                                 fontSize: 18,
-                                color: MD3Colors.primary50,
+                                color: theme.colors.primary,
                                 marginTop: 8,
                                 textAlign: 'center',
                                 fontWeight: '500',

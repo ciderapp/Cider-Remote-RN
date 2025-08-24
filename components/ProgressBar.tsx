@@ -6,7 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { PixelRatio, Platform, StyleSheet, useWindowDimensions, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import Animated, { Easing, useAnimatedProps, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
-import Svg, { Circle, ClipPath, Defs, G, Path, Rect } from "react-native-svg";
+import Svg, { Circle, Path, Rect } from "react-native-svg";
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 const AnimatedRect = Animated.createAnimatedComponent(Rect);
@@ -20,7 +20,6 @@ export function ProgressBar() {
   const [tempProgress, setTempProgress] = useState(0);
   const { width: windowWidth } = useWindowDimensions();
 
-  // Material 3 expressive scaling heuristic based on window class and font scale
   const deviceScale = useMemo(() => {
     const fontScale = Math.min(PixelRatio.getFontScale?.() ?? 1, 1.3);
     const widthClass = windowWidth < 600 ? 1 : windowWidth < 840 ? 1.1 : 1.2;
@@ -28,7 +27,6 @@ export function ProgressBar() {
     return fontScale * widthClass * platformBump;
   }, [windowWidth]);
 
-  // Layout state for SVG sizing
   const [layoutWidth, setLayoutWidth] = useState(0);
   const onLayout = useCallback((e: any) => {
     const { width } = e.nativeEvent.layout;
@@ -78,20 +76,19 @@ export function ProgressBar() {
   const currentDisplayProgress = isSliding ? tempProgress : progress;
 
   const phase = useSharedValue(0);
-  useMemo(() => {
+  useEffect(() => {
     phase.value = 0;
     phase.value = withRepeat(
       withTiming(2 * Math.PI, { duration: Platform.OS === 'android' ? 6500 : 6000, easing: Easing.linear }),
       -1,
       false
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [phase]);
 
   const trackHeight = Math.round(14 * deviceScale); // container height = 14dp
   const baseTrackThickness = Math.round(4 * deviceScale); // baseline thickness = 4dp
-  const strokeWidth = Math.max(2, Math.round(4 * deviceScale)); // wave stroke = 4dp
-  const amplitude = Math.max(2, Math.round(2.1 * deviceScale)); // wave amplitude = 2.1dp
+  const strokeWidth = Math.max(2, Math.round(3 * deviceScale)); // wave stroke = 3dp
+  const amplitude = Math.max(2, Math.round(3 * deviceScale)); // wave amplitude = 3dp
   const wavelength = Math.max(36, Math.round(40 * deviceScale)); // wavelength = 40dp
 
   const widthShared = useSharedValue(0);
@@ -112,7 +109,7 @@ export function ProgressBar() {
   const buildPath = useCallback((w: number, h: number, amp: number, wl: number, ph: number, overflow: number) => {
     'worklet';
     const midY = h / 2;
-    const step = Math.max(4, Math.floor(wl / 20)); // tune for smoother perf
+    const step = Math.max(3, Math.floor(wl / 28)); // smoother wave sampling
     let d = `M ${-overflow} ${midY}`;
     for (let x = -overflow; x <= w + overflow; x += step) {
       const y = midY + amp * Math.sin((2 * Math.PI * x) / wl + ph);
@@ -121,31 +118,19 @@ export function ProgressBar() {
     return d;
   }, []);
 
-  const overflowX = Math.ceil(amplitude + strokeWidth * 3);
+  const overflowX = Math.ceil(amplitude + strokeWidth * 4);
 
   const animatedProps = useAnimatedProps(() => {
     const totalW = widthShared.value;
     const h = heightShared.value;
-    const progressW = Math.max(0, Math.min(totalW, totalW * progressRatioShared.value));
-    const d = buildPath(progressW, h, amplitude, wavelength, phase.value, overflowX);
+    const d = buildPath(totalW, h, amplitude, wavelength, phase.value, overflowX);
     return { d } as any;
-  });
-
-  const clipRectProps = useAnimatedProps(() => {
-    const totalW = widthShared.value;
-    const progressW = Math.max(0, Math.min(totalW, totalW * progressRatioShared.value));
-    return {
-      x: -overflowX,
-      y: 0,
-      width: Math.max(0, progressW + overflowX * 2),
-      height: heightShared.value,
-    } as any;
   });
 
   const unfilledRectProps = useAnimatedProps(() => {
     const totalW = widthShared.value;
     const progressW = Math.max(0, Math.min(totalW, totalW * progressRatioShared.value));
-    const startX = progressW + strokeWidth / 0.21;
+    const startX = progressW + strokeWidth / 2;
     return {
       x: startX,
       y: (heightShared.value - baseTrackThickness) / 2,
@@ -156,35 +141,71 @@ export function ProgressBar() {
     } as any;
   });
 
+  // animated props for a vertical drag bar at the progress boundary
+  const dragBarWidth = Math.max(1, Math.round(4 * deviceScale));
+  const dragBarMarginV = 0;
+  const dragBarProps = useAnimatedProps(() => {
+    const totalW = widthShared.value;
+    const progressW = Math.max(0, Math.min(totalW, totalW * progressRatioShared.value));
+    const x = Math.max(0, Math.min(totalW - dragBarWidth, progressW + strokeWidth * 0.5 - dragBarWidth / 2));
+    return {
+      x,
+      y: dragBarMarginV,
+      width: dragBarWidth,
+      height: heightShared.value,
+      rx: dragBarWidth / 2,
+      ry: dragBarWidth / 2,
+    } as any;
+  });
+
   return (
     <View style={styles.container}>
       <View style={[styles.sliderContainer, { height: trackHeight }]}>
         <View style={StyleSheet.absoluteFill} onLayout={onLayout}>
           {!!layoutWidth && (
             <Svg width={layoutWidth} height={trackHeight}>
-              <Defs>
-                <ClipPath id="progressClip">
-                  <AnimatedRect animatedProps={clipRectProps} />
-                </ClipPath>
-              </Defs>
+              {/* wave across full width */}
+              <AnimatedPath
+                animatedProps={animatedProps}
+                fill="none"
+                stroke={theme.colors.primary}
+                strokeOpacity={0.95}
+                strokeWidth={strokeWidth}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
 
+              {/* mask wave to the right of progress */}
+              {(() => {
+                const totalW = layoutWidth;
+                const ratio = duration > 0 ? currentDisplayProgress / duration : 0;
+                const progressW = Math.max(0, Math.min(totalW, totalW * ratio));
+                const x = progressW;
+                const w = Math.max(0, totalW - x);
+                return (
+                  <Rect
+                    x={x}
+                    y={0}
+                    width={w}
+                    height={trackHeight}
+                    fill={theme.colors.background}
+                  />
+                );
+              })()}
+
+              {/* crispy edge.. */}
               <AnimatedRect
                 animatedProps={unfilledRectProps}
                 fill={theme.colors.outline}
                 opacity={0.35}
               />
 
-              <G clipPath="url(#progressClip)">
-                <AnimatedPath
-                  animatedProps={animatedProps}
-                  fill="none"
-                  stroke={theme.colors.primary}
-                  strokeOpacity={0.95}
-                  strokeWidth={strokeWidth}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </G>
+              {/* Drag handle bar */}
+              <AnimatedRect
+                animatedProps={dragBarProps}
+                fill={theme.colors.primary}
+                opacity={1}
+              />
 
               {(() => {
                 const endInset = Math.round(2 * deviceScale);

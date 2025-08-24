@@ -5,10 +5,11 @@ import { useRouter } from "expo-router";
 import { useAtomValue } from "jotai";
 import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
-import { ActivityIndicator, IconButton, List, MD3Colors, Text } from "react-native-paper";
+import { ActivityIndicator, IconButton, List, Text, useTheme } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Library() {
+    const theme = useTheme();
     const playlists = useAtomValue(libraryPlaylists);
     const playlistsLoading = useAtomValue(libraryPlaylistsLoading);
     const router = useRouter();
@@ -67,7 +68,7 @@ export default function Library() {
                         title="Refresh"
                         left={props =>
                             playlistsLoading
-                                ? <ActivityIndicator animating={true} color={MD3Colors.primary0} />
+                                ? <ActivityIndicator animating={true} color={theme.colors.primary} />
                                 : <List.Icon {...props} icon="refresh" />
                         }
                         onPress={() => { getLibraryPlaylists() }}
