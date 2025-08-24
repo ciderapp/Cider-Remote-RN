@@ -152,15 +152,45 @@ export interface PreviewFrame extends Artwork {
  */
 export interface Artist extends Resource {
   attributes: ArtistAttributes;
+  relationships?: {
+    albums?: Relationship<Album>;
+  };
+  meta: {
+    views: {
+      order: string[];
+    }
+  },
+  views?: {
+    [key: string]: {
+      href: string;
+      next?: string;
+      attributes: {
+        title: string;
+      };
+      data: any[];
+    };
+  };
 }
 
 /**
  * Attributes for an Artist.
  */
 export interface ArtistAttributes {
+  artistBio?: string;
   artwork: Artwork;
+  bornOrFormed?: string;
+  editorialArtwork?: EditorialArtwork;
+  editorialNotes?: {
+    short?: string;
+    standard?: string;
+  };
+  editorialVideo?: EditorialVideo;
+  genreNames: string[];
   hero?: Hero[];
+  inFavorites: boolean;
+  isGroup: boolean;
   name: string;
+  origin?: string;
   url: string;
 }
 

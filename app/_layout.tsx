@@ -16,21 +16,35 @@ configureReanimatedLogger({
 
 function ThemedProviders() {
   const { paperTheme, navTheme } = useMaterialYouTheme();
-  
+
   return (
     <PaperProvider theme={paperTheme}>
       <ThemeProvider value={navTheme}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
-          <Stack.Screen name="albums/[id]/index" options={{ headerShown: false }} />
-          <Stack.Screen name="playlists/[id]/index" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="albums/[id]/index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="playlists/[id]/index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="artists/[id]/index"
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="artists/[id]/view/[viewId]/index"
+            options={{ headerShown: false }}
+          />
           <Stack.Screen
             name="play-action"
             options={{
-              presentation: 'transparentModal',
-              animation: 'slide_from_bottom',
-              title: 'Play Action',
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+              title: "Play Action",
               headerShown: false,
               animationDuration: 300,
             }}
@@ -38,9 +52,9 @@ function ThemedProviders() {
           <Stack.Screen
             name="modals/now-playing"
             options={{
-              presentation: 'transparentModal',
-              animation: 'slide_from_bottom',
-              title: 'Now Playing',
+              presentation: "transparentModal",
+              animation: "slide_from_bottom",
+              title: "Now Playing",
               headerShown: false,
               animationMatchesGesture: true,
             }}
@@ -48,17 +62,17 @@ function ThemedProviders() {
           <Stack.Screen
             name="modals/connect-qr"
             options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-              title: 'Scan QR Code',
+              presentation: "modal",
+              animation: "slide_from_bottom",
+              title: "Scan QR Code",
               headerShown: false,
             }}
           />
           <Stack.Screen
             name="modals/settings"
             options={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
+              presentation: "modal",
+              animation: "slide_from_bottom",
               headerShown: false,
             }}
           />
