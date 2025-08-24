@@ -6,7 +6,7 @@ import { GestureResponderEvent, StyleSheet, View } from "react-native";
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { IconButton, Portal, Surface, Text, TouchableRipple } from "react-native-paper";
 import Animated, { runOnJS, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Artwork } from "./Artwork";
 import { ArtworkBlur } from "./ArtworkBlur";
 import { NowPlayingView } from "./NowPlayingView";
@@ -39,10 +39,17 @@ export function NowPlayingBar() {
         }
     }, [opened]);
 
+    const insets = useSafeAreaInsets();
+    
+
     const handleOverlayDismiss = () => {
         overlayOpacity.value = withTiming(0, { duration: 120 }, (finished) => {
             if (finished) {
-                runOnJS(setOpened)(false);
+                if (typeof window !== "undefined") {
+                    setOpened(false);
+                } else {
+                    runOnJS(setOpened)(false);
+                }
                 translateY.value = 0;
             }
         });
@@ -58,7 +65,11 @@ export function NowPlayingBar() {
             if (translateY.value > 40) {
                 // Animate out and dismiss
                 translateY.value = withTiming(800, { duration: 250 });
-                runOnJS(handleOverlayDismiss)();
+                if (typeof window !== "undefined") {
+                    handleOverlayDismiss();
+                } else {
+                    runOnJS(handleOverlayDismiss)();
+                }
             } else {
                 // Animate back to position
                 translateY.value = withTiming(0, { duration: 200 });
@@ -117,8 +128,23 @@ export function NowPlayingBar() {
                                     padding: 32,
                                     alignItems: 'center',
                                     justifyContent: 'center',
-
+                                    borderTopRightRadius: 16,
+                                    borderTopLeftRadius: 16,
+                                    overflow: 'hidden',
                                 }}>
+                                    <View
+                                        style={{
+                                            height: 4,
+                                            width: 60,
+                                            borderRadius: 8,
+                                            backgroundColor: 'white',
+                                            zIndex: 1,
+                                            opacity: 0.5,
+                                            position: 'absolute',
+                                            top: insets.top + 8,
+                                            margin: 0,
+                                        }}
+                                    ></View>
                                     <ArtworkBlur />
                                     <SafeAreaView>
                                         <NowPlayingView />
