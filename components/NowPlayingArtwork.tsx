@@ -38,7 +38,7 @@ export function NowPlayingArtwork() {
     return formatArtworkUrl(nowPlaying.artwork?.url, { width: 600, height: 600 });
   }, [nowPlaying]);
 
-  const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 600) * 0.8;
+  const artworkSize = Math.min(screenDimensions.width, screenDimensions.height, 600) * 0.9;
 
   return (
     <View style={styles.container}>
