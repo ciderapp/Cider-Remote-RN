@@ -3,7 +3,7 @@ import { searchCatalog } from "@/lib/search";
 import { ItemTypes, SearchResponse } from "@/types/search";
 import { formatArtworkUrl } from "@/utils/artwork";
 import { useMemo, useState } from "react";
-import { ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { Card, List, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -25,6 +25,21 @@ export default function SearchPage() {
         setMeta(data.meta);
     }
 
+    // Flatten results for FlatList: each entry is either a section header or an item
+    const flatResults = useMemo(() => {
+        if (!results || !sortOrder.length) return [];
+        const items: Array<{ type: "header" | "item", key: string, label?: string, item?: ItemTypes }> = [];
+        sortOrder.forEach(type => {
+            const section = results[type as keyof SearchResponse['results']];
+            if (section?.data?.length) {
+                items.push({ type: "header", key: `header-${type}`, label: type.charAt(0).toUpperCase() + type.slice(1) + " Results" });
+                section.data.forEach((item, idx) => {
+                    items.push({ type: "item", key: `${type}-${idx}`, item: item as ItemTypes });
+                });
+            }
+        });
+        return items;
+    }, [results, sortOrder]);
 
     function ResultListItem({
         item,
@@ -56,13 +71,7 @@ export default function SearchPage() {
     }
 
     return (
-        <ScrollView>
-            <SafeAreaView>
-                <Text style={{
-                    padding: 16,
-                    fontWeight: 'bold'
-                }} variant="displayMedium">Search</Text>
-            </SafeAreaView>
+        <SafeAreaView>
             <View style={{
                 paddingHorizontal: 16,
             }}>
@@ -79,28 +88,30 @@ export default function SearchPage() {
 
                 <Card style={{ marginTop: 16 }}>
                     <Card.Content>
-                        <List.Section>
-                            {sortOrder
-                                .filter(type => (results ?? {})[type as keyof SearchResponse['results']])
-                                .map(type => (
-                                    <View key={type}>
-                                        <List.Subheader>{type.charAt(0).toUpperCase() + type.slice(1)} Results</List.Subheader>
-                                        {results?.[type as keyof SearchResponse['results']]?.data?.map((item, idx) => (
-                                            <View key={idx}>
-                                                <ResultListItem
-                                                    item={item as ItemTypes}
-                                                    formatArtworkUrl={formatArtworkUrl}
-                                                    styles={styles}
-                                                />
-                                            </View>
-                                        ))}
-                                    </View>
-                                ))}
-                        </List.Section>
+                        <FlatList
+                            data={flatResults}
+                            keyExtractor={item => item.key}
+                            renderItem={({ item }) => {
+                                if (item.type === "header") {
+                                    return <List.Subheader>{item.label}</List.Subheader>;
+                                }
+                                if (item.type === "item" && item.item) {
+                                    return (
+                                        <ResultListItem
+                                            item={item.item}
+                                            formatArtworkUrl={formatArtworkUrl}
+                                            styles={styles}
+                                        />
+                                    );
+                                }
+                                return null;
+                            }}
+                            ListEmptyComponent={<Text>No results</Text>}
+                        />
                     </Card.Content>
                 </Card>
-            </View >
-        </ScrollView >
+            </View>
+        </SafeAreaView>
     )
 }
 
