@@ -1,4 +1,4 @@
-import { v3 } from "./am-api";
+import { v3 } from "@/utils/fetch";
 
 type LyricApiResponse = {
   data?: {
@@ -83,7 +83,7 @@ export async function parseTtml(ttml: string): Promise<LyricLine[]> {
 }
 
 export async function getLyrics(id: string) {
-  const res = await v3<LyricApiResponse>(`/v1/catalog/us/songs/${id}/lyrics`);
+  const res = await v3<LyricApiResponse>(`/v1/catalog/$STOREFRONT/songs/${id}/lyrics`);
   if (res.errors || !res.data || res.data.data.length === 0) {
     console.warn("No lyrics found for song", id, res.errors);
     return null;

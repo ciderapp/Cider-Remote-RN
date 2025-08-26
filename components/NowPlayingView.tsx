@@ -2,7 +2,7 @@ import { nowPlayingItem } from "@/lib/playback-control";
 import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { Dimensions, View } from "react-native";
-import { Button } from "react-native-paper";
+import { SegmentedButtons } from "react-native-paper";
 import Lyrics from "./Lyrics";
 import { NowPlayingArtwork } from "./NowPlayingArtwork";
 import { NowPlayingMetadata } from "./NowPlayingMetadata";
@@ -46,34 +46,46 @@ export function NowPlayingView() {
             gap: orientation === "landscape" ? 32 : undefined,
           }}
         >
+          {/* Segmented Controls */}
           <View
             style={{
               display: "flex",
               flexDirection: "row",
               gap: 8,
+              alignItems: "center",
+              maxWidth: 300,
             }}
           >
-            <Button
-              mode={playerMode === "player" ? "contained" : "outlined"}
-              onPress={() => setPlayerMode("player")}
-            >
-              Player
-            </Button>
-            <Button
-              mode={playerMode === "queue" ? "contained" : "outlined"}
-              onPress={() => setPlayerMode("queue")}
-            >
-              Queue
-            </Button>
-            <Button
-              mode={playerMode === "lyrics" ? "contained" : "outlined"}
-              onPress={() => setPlayerMode("lyrics")}
-            >
-              Lyrics
-            </Button>
+            <SegmentedButtons
+              value={playerMode}
+              onValueChange={setPlayerMode}
+              density="regular"
+              buttons={[
+                {
+                  value: "player",
+                  label: "Player",
+                  icon: "play",
+                },
+                {
+                  value: "queue",
+                  label: "Queue",
+                  icon: "playlist-music",
+                },
+                {
+                  value: "lyrics",
+                  label: "Lyrics",
+                  icon: "music-note",
+                },
+              ]}
+            />
           </View>
+
           {/* Player Modes */}
-          <View>
+          <View
+            style={{
+              flex: 1,
+            }}
+          >
             {playerMode === "player" && (
               <View
                 style={{
@@ -108,7 +120,8 @@ export function NowPlayingView() {
                   alignItems: "center",
                   justifyContent: "center",
                   flex: 1,
-                  width: '100%',
+                  width: "100%",
+                  display: "flex",
                 }}
               >
                 <Queue />
@@ -120,10 +133,11 @@ export function NowPlayingView() {
                   alignItems: "center",
                   justifyContent: "center",
                   flex: 1,
-                  width: '100%',
+                  display: "flex",
+                  width: "100%",
                 }}
               >
-                <Lyrics/>
+                <Lyrics />
               </View>
             )}
           </View>

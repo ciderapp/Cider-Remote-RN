@@ -1,9 +1,9 @@
 import { Artwork } from "@/components/Artwork";
 import { TrackList } from "@/components/TrackList";
-import { v3 } from "@/lib/am-api";
 import { interact } from "@/lib/interact";
 import { getTracks } from "@/lib/tracks";
 import { ItemTypes, Playlist, Song } from "@/types/search";
+import { v3 } from "@/utils/fetch";
 import { useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -27,7 +27,7 @@ export default function PlaylistPage() {
         if (id.includes('.')) {
             return `/v1/me/library/playlists/${id}`;
         }
-        return `/v1/catalog/us/playlists/${id}`;
+        return `/v1/catalog/$STOREFRONT/playlists/${id}`;
     }, [id])
 
     const lastModifiedDate = useMemo(() => {

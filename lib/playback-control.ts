@@ -24,6 +24,10 @@ export async function getNowPlayingItem() {
     "/api/v1/playback/now-playing"
   );
   if(!res) return;
+  if(!res.info) {
+    console.warn('/api/v1/playback/now-playing did not return info')
+    return;
+  }
   store.set(nowPlayingItem, res.info);
   store.set(repeatMode, res.info.repeatMode);
   store.set(shuffleMode, res.info.shuffleMode);

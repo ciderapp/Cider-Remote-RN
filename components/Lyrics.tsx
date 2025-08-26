@@ -192,7 +192,7 @@ export function LyricsView() {
                 onScrollEndDrag={handleScrollEnd}
                 onMomentumScrollBegin={handleScrollBegin}
                 onMomentumScrollEnd={handleScrollEnd}
-                contentContainerStyle={[styles.container, { maxWidth: width - 48 }]}
+                contentContainerStyle={[styles.container]}
                 showsVerticalScrollIndicator={false}
                 bounces={true}
                 bouncesZoom={true}

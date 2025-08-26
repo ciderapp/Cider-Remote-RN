@@ -3,6 +3,7 @@ import {
   PlaybackStateDidChange,
   PlaybackTimeDidChange,
 } from "@/types";
+import { CiderFetch, getStorefront } from "@/utils/fetch";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { atom, getDefaultStore } from "jotai";
 import { io, Socket } from "socket.io-client";
@@ -63,8 +64,14 @@ export class IOState {
     IOState.instance.disconnect();
   }
 
-  static connect() {
+  static async connect() {
     IOState.saveApiToken();
+
+    const connectionTest = await IOState.testConnection();
+    if(!connectionTest) {
+      console.error("Failed to connect to server");
+      return;
+    }
 
     IOState.store.get(IOState.connected);
     IOState.instance = io(IOState.hostAddress);
@@ -83,8 +90,22 @@ export class IOState {
       IOState.handlePlaybackEvent(msg);
     });
 
+    await getStorefront();
     getNowPlayingItem();
     fetchQueue();
+  }
+
+  static async testConnection() {
+    const res = await CiderFetch<{
+      status: string;
+    }>('/api/v1/playback/active');
+
+    if(!res) return false;
+
+    if(res.status === "ok") {
+      return true;
+    }
+    return false;
   }
 
   static handlePlaybackEvent(msg: APIPlaybackEvent<any>) {

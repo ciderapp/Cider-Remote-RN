@@ -1,5 +1,5 @@
 import { SearchResponse } from "@/types/search";
-import { v3 } from "./am-api";
+import { v3 } from "@/utils/fetch";
 
 const itemTypes = {
   catalog: [
@@ -30,7 +30,7 @@ const itemTypes = {
 export async function searchCatalog(query: string) {
   const res = await v3<{
     data: SearchResponse
-  }>("/v1/catalog/us/search", {
+  }>("/v1/catalog/$STOREFRONT/search", {
     term: query,
     "relate[editorial-items]": "contents",
     "include[editorial-items]": "contents",

@@ -1,6 +1,6 @@
 import { LibraryPlaylist } from "@/types/musickit";
+import { v3Turbo } from "@/utils/fetch";
 import { atom, getDefaultStore } from "jotai";
-import { v3Turbo } from "./am-api";
 
 const store = getDefaultStore();
 

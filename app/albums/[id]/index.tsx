@@ -1,9 +1,9 @@
 import { Artwork } from "@/components/Artwork";
 import { TrackList } from "@/components/TrackList";
-import { v3 } from "@/lib/am-api";
 import { interact } from "@/lib/interact";
 import { getTracks } from "@/lib/tracks";
 import { Album, ItemTypes, Song } from "@/types/search";
+import { v3 } from "@/utils/fetch";
 import { useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
@@ -27,7 +27,7 @@ export default function AlbumPage() {
         if (id.includes('.')) {
             return `/v1/me/library/albums/${id}`;
         }
-        return `/v1/catalog/us/albums/${id}`;
+        return `/v1/catalog/$STOREFRONT/albums/${id}`;
     }, [id])
 
     const releaseDate = useMemo(() => {

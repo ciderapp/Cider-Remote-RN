@@ -16,8 +16,9 @@ export default function HomeScreen() {
   useEffect(() => {
     IOState.load().then(() => {
       setReady(true);
-
-      IOState.connect();
+      if(IOState.store.get(IOState.apiToken)) {
+        IOState.connect();
+      }
     });
   }, []);
 

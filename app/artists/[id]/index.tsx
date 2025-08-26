@@ -1,14 +1,14 @@
 import { Artwork } from "@/components/Artwork";
-import { v3 } from "@/lib/am-api";
 import { Artist } from "@/types/search";
+import { v3 } from "@/utils/fetch";
 import { useRoute } from "@react-navigation/native";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { IconButton, List, Text, useTheme } from "react-native-paper";
 import {
-    SafeAreaView,
-    useSafeAreaInsets,
+  SafeAreaView,
+  useSafeAreaInsets,
 } from "react-native-safe-area-context";
 
 export default function ArtistPage() {
@@ -27,7 +27,7 @@ export default function ArtistPage() {
     if (id.includes(".")) {
       return `/v1/me/library/artists/${id}`;
     }
-    return `/v1/catalog/us/artists/${id}`;
+    return `/v1/catalog/$STOREFRONT/artists/${id}`;
   }, [id]);
 
   const views = useMemo(() => {
@@ -106,7 +106,7 @@ export default function ArtistPage() {
             <List.Section>
               {viewsOrder.map((key) => {
                 const view = views?.[key];
-                if (!view) return null;
+                if (!view || !view.data || view.data.length === 0) return null;
                 return (
                   <List.Item
                     key={key}
