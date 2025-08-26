@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "cider-remote-app",
+    "name": "Cider Remote",
     "slug": "cider-remote-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "expoapp",
+    "scheme": "ciderremote",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
