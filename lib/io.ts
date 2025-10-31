@@ -12,6 +12,7 @@ import {
   playbackState,
   repeatMode,
   shuffleMode,
+  volume,
 } from "./playback-control";
 import { fetchQueue } from "./queue";
 
@@ -136,6 +137,11 @@ export class IOState {
       case "playerStatus.shuffleModeDidChange": {
         const data = msg.data as number;
         IOState.store.set(shuffleMode, data);
+        break;
+      }
+      case "playerStatus.volumeDidChange": {
+        const data = msg.data as number;
+        IOState.store.set(volume, parseFloat(data.toFixed(2)));
         break;
       }
       default:

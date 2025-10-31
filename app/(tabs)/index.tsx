@@ -92,7 +92,7 @@ export default function HomeScreen() {
                   router.push("/modals/connect-qr");
                 }}
               >
-                Scan
+                Scan QR Code
               </Button>
             </View>
           )}

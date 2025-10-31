@@ -9,6 +9,7 @@ import { NowPlayingMetadata } from "./NowPlayingMetadata";
 import { PlaybackButtons } from "./PlaybackButtons";
 import { ProgressBar } from "./ProgressBar";
 import Queue from "./Queue";
+import { VolumeBar } from "./VolumeBar";
 
 export function NowPlayingView() {
   const nowPlaying = useAtomValue(nowPlayingItem);
@@ -110,6 +111,7 @@ export function NowPlayingView() {
                   <View>
                     <ProgressBar />
                     <PlaybackButtons />
+                    <VolumeBar/>
                   </View>
                 </View>
               </View>

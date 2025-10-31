@@ -11,6 +11,7 @@ export type APIPlaybackType =
   | "playbackStatus.playbackStateDidChange"
   | "playerStatus.shuffleModeDidChange"
   | "playerStatus.repeatModeDidChange"
+  | "playerStatus.volumeDidChange";
 
 export type PlaybackTimeDidChange = {
   currentPlaybackDuration: number;
