@@ -43,4 +43,6 @@ cd android
 ```
 
 ## License
-Apache License 2.0 with Commons Clause
+This project is licensed under the Apache License 2.0 with Commons Clause license. See the LICENSE file for details.
+
+© Cider Collective 2025
