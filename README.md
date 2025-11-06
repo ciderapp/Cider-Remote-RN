@@ -28,7 +28,8 @@ This project is the Cider Remote application for Android 12 and later, built usi
 - Android SDK
 
 ## Minimum Target Android Version
-Android 12 or later
+Officially our target Android version is Android 12 or later. 
+Expo as of Expo 53 technically supports Android 7+. However, **we do not guarentee support for Android versions that old**.
 
 ## Troubleshooting
 [Troubleshooting guides can be found on the Wiki](https://github.com/ciderapp/Cider-Remote-RN/wiki/Support)

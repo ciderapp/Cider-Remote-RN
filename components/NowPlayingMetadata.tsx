@@ -55,7 +55,7 @@ export function NowPlayingMetadata({ nowPlaying }: Props) {
         lineHeight: Math.round(titleFontSize * 1.08),
       },
       artistStyle: {
-        fontFamily: "Inter",
+        fontFamily: "RobotoFlex",
         textAlign: "center" as const,
         marginBottom: 4,
         opacity: 0.8,
@@ -65,7 +65,7 @@ export function NowPlayingMetadata({ nowPlaying }: Props) {
         letterSpacing: -0.05,
       },
       albumStyle: {
-        fontFamily: "Inter",
+        fontFamily: "RobotoFlex",
         textAlign: "center" as const,
         opacity: 0.6,
         fontWeight: variantAlbumWeight,
