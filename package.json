@@ -11,6 +11,7 @@
     "prebuild": "expo prebuild",
     "build:web": "expo export -p web",
     "build:android": "expo prebuild && cd android && ./gradlew assembleRelease",
+    "build:androidDebug": "expo prebuild && cd android && ./gradlew installDebug",
     "lint": "expo lint"
   },
   "dependencies": {
@@ -25,6 +26,7 @@
     "@react-navigation/native": "^7.1.6",
     "events": "^3.3.0",
     "expo": "~53.0.20",
+    "expo-audio": "~0.4.9",
     "expo-blur": "~14.1.5",
     "expo-build-properties": "^0.14.8",
     "expo-camera": "~16.1.11",

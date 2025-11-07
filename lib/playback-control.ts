@@ -1,7 +1,9 @@
-import { NowPlayingInfo, PlaybackInfoResponse, PlaybackStates } from "@/types";
+import { audioPlayer } from "@/app/_layout";
+import { CastStatusResponse, NowPlayingInfo, PlaybackInfoResponse, PlaybackStates } from "@/types";
 import { ItemTypes } from "@/types/search";
 import { CiderFetch } from "@/utils/fetch";
 import { atom, getDefaultStore } from "jotai";
+import { IOState } from "./io";
 
 const store = getDefaultStore();
 
@@ -12,6 +14,7 @@ export const volume = atom(1);
 export const shuffleMode = atom(0);
 export const repeatMode = atom(0);
 export const isShuffleOn = atom((get) => get(shuffleMode) === 1);
+export const isCasting = atom(false);
 
 export async function getVolume() {
   const res = await CiderFetch<{ volume: number }>("/api/v1/playback/volume");
@@ -31,6 +34,48 @@ export async function getNowPlayingItem() {
   store.set(nowPlayingItem, res.info);
   store.set(repeatMode, res.info.repeatMode);
   store.set(shuffleMode, res.info.shuffleMode);
+}
+
+export async function getCastStatus() {
+  const res = await CiderFetch<CastStatusResponse>(
+    "/api/v1/audiocasts/status"
+  );
+  if(!res) return;
+  console.log("Cast status:", res.isCasting);
+  store.set(isCasting, res.isCasting);
+}
+
+export async function toggleCast(enable: boolean) {
+  console.log("Toggling cast to:", enable);
+  try {
+    !enable ? pauseAudio(): null;
+  } catch {}
+
+  await CiderFetch<any>(
+    "/api/v1/audiocasts/toggle-cast",
+    { enable: enable },
+    {
+      method: "POST",
+    }
+  );
+
+  try {
+    enable ? playAudio(): null;
+  } catch {}
+
+  store.set(isCasting, enable);
+}
+
+export function playAudio() {
+  audioPlayer.replace(IOState.hostAddress + "/api/v1/audiocasts/audio.mp3");
+  audioPlayer.volume = 1;
+  audioPlayer.play();
+}
+
+export function pauseAudio() {
+  audioPlayer.volume = 0;
+  audioPlayer.pause();
+  audioPlayer.remove();
 }
 
 export async function playLater(item: ItemTypes) {

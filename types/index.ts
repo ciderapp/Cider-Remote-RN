@@ -73,3 +73,8 @@ export type PlaybackInfoResponse = {
   status: "ok";
   info: NowPlayingInfo;
 };
+
+export type CastStatusResponse = {
+  isCasting: boolean;
+  clients: number;
+};

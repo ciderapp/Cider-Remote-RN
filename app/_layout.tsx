@@ -6,9 +6,9 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { useMaterialYouTheme } from "@/hooks/useMaterialYouTheme";
+import { safeMaterialYouChecker, useMaterialYouTheme } from "@/hooks/useMaterialYouTheme";
 import { MaterialYouService } from "@assembless/react-native-material-you";
-import { Platform } from "react-native";
+import { useAudioPlayer } from "expo-audio";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider } from "react-native-paper";
 import { configureReanimatedLogger } from "react-native-reanimated";
@@ -87,6 +87,10 @@ function ThemedProviders() {
   );
 }
 
+
+export let audioPlayer = useAudioPlayer(undefined, 50 );
+
+
 export default function RootLayout() {
   const [localLoaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -100,15 +104,13 @@ export default function RootLayout() {
     Roboto_900Black,
   });
   const loaded = localLoaded && googleFlexLoaded && googleRobotoLoaded;
-  
 
   if (!loaded) {
     // Async font loading only occurs in development.
     return null;
   }
 
-  const isNewerThan30 = Platform.OS === "android" && Number(Platform.Version) >= 31;
-  const materialYouElement = isNewerThan30 ? (
+  const materialYouElement = safeMaterialYouChecker() ? (
     <MaterialYouService>
       <ThemedProviders/>
     </MaterialYouService>
