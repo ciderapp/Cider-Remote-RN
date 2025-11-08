@@ -1,4 +1,4 @@
-import { changeToIndex, fetchQueue, moveToPosition, queueItems, removeByIndex } from "@/lib/queue";
+import { changeToIndex, fetchQueue, modifiedQueueItems, moveToPosition, queueItems, removeByIndex } from "@/lib/queue";
 import { QueueItem } from "@/types/musickit";
 import { useIsFocused } from "@react-navigation/native";
 import { useAtom } from "jotai";
@@ -9,7 +9,7 @@ import { Button, Dialog, IconButton, List, Portal, useTheme } from "react-native
 
 export default function Queue() {
   const isFocused = useIsFocused();
-  const [queue, setQueue] = useAtom(queueItems);
+  const [queue, setQueue] = useAtom(modifiedQueueItems);
   const theme = useTheme();
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
@@ -58,7 +58,7 @@ type UIQueueItemProps = {
   onDragEnd?: () => void;
 };
 
-function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueItemProps) {
+export function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueItemProps) {
   const [queue, setQueue] = useAtom(queueItems);
   const [showActions, setShowActions] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -85,14 +85,23 @@ function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueIt
         toValue: 1.05,
         useNativeDriver: true,
       }).start();
-    } else if (event.nativeEvent.state === State.END || event.nativeEvent.state === State.CANCELLED) {
+  } else if (event.nativeEvent.state === State.END || event.nativeEvent.state === State.CANCELLED) {
       const { translationY } = event.nativeEvent;
-      const itemHeight = 80; // Approximate height of each item
+      const itemHeight = 80;
       const moveDistance = Math.round(translationY / itemHeight);
-      const newIndex = Math.max(0, Math.min(idx + moveDistance, queue.length - 1));
+      const originalIdx = item.originalIndex;
+      const newOriginalIndex =
+        originalIdx !== undefined
+          ? Math.max(0, Math.min(originalIdx + moveDistance, queue.length - 1))
+          : undefined;
 
-      if (newIndex !== idx && event.nativeEvent.state === State.END) {
-        moveToPosition(idx, newIndex);
+      if (
+        newOriginalIndex !== undefined &&
+        originalIdx !== undefined &&
+        newOriginalIndex !== originalIdx &&
+        event.nativeEvent.state === State.END
+      ) {
+        moveToPosition(originalIdx, newOriginalIndex);
       }
 
       Animated.parallel([
@@ -106,7 +115,6 @@ function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueIt
         }),
       ]).start();
 
-      // Delay resetting isDragging to prevent menu from showing
       setTimeout(() => {
         setIsDragging(false);
       }, 100);
@@ -115,7 +123,6 @@ function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueIt
     }
   };
 
-  // Move PanGestureHandler to wrap only the drag handle
   return (
     <>
       <Animated.View
@@ -132,7 +139,7 @@ function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueIt
           title={item.attributes.name ?? "Untitled"}
           description={item.attributes.artistName ?? ""}
           onPress={() => {
-            changeToIndex(idx);
+            changeToIndex(item.originalIndex ?? idx);
           }}
           left={(props) =>
             item.attributes.artwork?.url ? (
@@ -179,7 +186,7 @@ function UIQueueItem({ item, idx, isDragged, onDragStart, onDragEnd }: UIQueueIt
               <Button
                 icon="close"
                 onPress={() => {
-                  removeByIndex(idx);
+                  removeByIndex(item.originalIndex ?? idx);
                   setShowActions(false);
                 }}>Remove From Queue</Button>
             </Dialog.Content>
