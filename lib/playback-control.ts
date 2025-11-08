@@ -1,7 +1,8 @@
-import { audioPlayer } from "@/app/_layout";
 import { CastStatusResponse, NowPlayingInfo, PlaybackInfoResponse, PlaybackStates } from "@/types";
 import { ItemTypes } from "@/types/search";
+import { formatArtworkUrl } from "@/utils/artwork";
 import { CiderFetch } from "@/utils/fetch";
+import TrackPlayer, { Capability, RepeatMode } from "@weights-ai/react-native-track-player";
 import { atom, getDefaultStore } from "jotai";
 import { IOState } from "./io";
 
@@ -48,7 +49,7 @@ export async function getCastStatus() {
 export async function toggleCast(enable: boolean) {
   console.log("Toggling cast to:", enable);
   try {
-    !enable ? pauseAudio(): null;
+    !enable ? await pauseAudio(): null;
   } catch {}
 
   await CiderFetch<any>(
@@ -60,22 +61,116 @@ export async function toggleCast(enable: boolean) {
   );
 
   try {
-    enable ? playAudio(): null;
+    enable ? await playAudio(): null;
   } catch {}
 
   store.set(isCasting, enable);
 }
 
-export function playAudio() {
-  audioPlayer.replace(IOState.hostAddress + "/api/v1/audiocasts/audio.mp3");
-  audioPlayer.volume = 1;
-  audioPlayer.play();
+export async function UpdateNotification (data : any = null, isCasting: boolean = false) {
+  try {
+       console.log("Updating notification...", isCasting);
+        let nowPlaying = data;
+        if (!nowPlaying) {
+            const res = await CiderFetch<PlaybackInfoResponse>(
+                "/api/v1/playback/now-playing"
+            );
+            nowPlaying = res?.info;
+        }
+        // get current now playing info
+        let notiNowPlaying = await TrackPlayer.getActiveTrack(); 
+
+        let nowPlayingMetadata = {
+            url: isCasting ? (IOState.hostAddress + "/api/v1/audiocasts/audio.mp3") : require("../assets/audio/2-seconds-of-silence.mp3") ,
+            title: nowPlaying?.name,
+            artist: nowPlaying?.artistName,
+            album: nowPlaying?.albumName,
+            artwork: nowPlaying?.artwork?.url ? formatArtworkUrl(nowPlaying?.artwork?.url, {width: 512, height: 512}) : undefined,
+            duration: nowPlaying?.durationInMillis ? Math.round(nowPlaying?.durationInMillis) / 1000 : undefined, // in seconds
+            elapsedTime: nowPlaying?.durationInMillis ? Math.round(nowPlaying?.currentPlaybackTime) : undefined, // in seconds
+        };
+
+        if (notiNowPlaying?.title === nowPlayingMetadata?.title &&
+            notiNowPlaying?.artist === nowPlayingMetadata?.artist &&
+            notiNowPlaying?.album === nowPlayingMetadata?.album) {
+            console.log("Now playing metadata is the same, no update needed.");
+            return;
+        }
+
+        let updateOptions = {
+            notificationCapabilities: isCasting ? [
+                Capability.Play,
+                Capability.Pause,
+                Capability.Stop,
+                Capability.SkipToNext,
+                Capability.SkipToPrevious,
+            ] : [
+                Capability.Play,
+                Capability.Pause,
+                Capability.SkipToNext,
+                Capability.SkipToPrevious,
+            ]
+        };
+
+
+        if (!isCasting) {
+            // await TrackPlayer.updateOptions(updateOptions);
+            await TrackPlayer.setRepeatMode(RepeatMode.Off);
+            await TrackPlayer.reset();
+            await TrackPlayer.add(nowPlayingMetadata);
+            await TrackPlayer.setRepeatMode(RepeatMode.Track);
+            await TrackPlayer.play();
+        } else {
+            // await TrackPlayer.updateOptions(updateOptions);
+            await TrackPlayer.updateNowPlayingMetadata(nowPlayingMetadata);
+            await TrackPlayer.play();
+        }  
+    } catch (e) {
+        console.error("Error updating notification:", e);
+    }
+};
+
+export async function playAudio() {
+  const res = await CiderFetch<PlaybackInfoResponse>(
+    "/api/v1/playback/now-playing"
+  );
+  const nowPlaying = res?.info;
+  var track1 = {
+    url: IOState.hostAddress + "/api/v1/audiocasts/audio.mp3", // Load media from the network
+    title: nowPlaying?.name ??  'Cider Remote',
+    artist: nowPlaying?.artistName,
+    album: nowPlaying?.albumName,
+    artwork: nowPlaying?.artwork?.url ? formatArtworkUrl(nowPlaying?.artwork?.url, {width: 512, height: 512}) : undefined,
+    duration: nowPlaying?.durationInMillis ? Math.round(nowPlaying?.durationInMillis) / 1000 : undefined, // in seconds
+    elapsedTime: nowPlaying?.durationInMillis ? Math.round(nowPlaying?.currentPlaybackTime) : undefined, // in seconds
+  };
+  await TrackPlayer.reset();
+  await TrackPlayer.add(track1);
+  await TrackPlayer.play();
 }
 
-export function pauseAudio() {
-  audioPlayer.volume = 0;
-  audioPlayer.pause();
-  audioPlayer.remove();
+export async function pauseAudio() {
+  console.log("Pausing audio playback...");
+ const res = await CiderFetch<PlaybackInfoResponse>(
+    "/api/v1/playback/now-playing"
+  );
+  const nowPlaying = res?.info;
+  var track1 = {
+      url: require("../assets/audio/2-seconds-of-silence.mp3"), // Load media from the network
+    title: nowPlaying?.name ??  'Cider Remote',
+    artist: nowPlaying?.artistName,
+    album: nowPlaying?.albumName,
+    artwork: nowPlaying?.artwork?.url ? formatArtworkUrl(nowPlaying?.artwork?.url, {width: 512, height: 512}) : undefined,
+    duration: nowPlaying?.durationInMillis ? Math.round(nowPlaying?.durationInMillis) / 1000 : undefined, // in seconds
+    elapsedTime: nowPlaying?.durationInMillis ? Math.round(nowPlaying?.currentPlaybackTime) : undefined, // in seconds
+  };
+
+  await TrackPlayer.reset();
+  await TrackPlayer.add(track1);
+  await TrackPlayer.setRepeatMode(RepeatMode.Track);
+  await TrackPlayer.play();
+
+
 }
 
 export async function playLater(item: ItemTypes) {

@@ -1,7 +1,7 @@
 {
   "name": "cider-remote-app",
-  "main": "expo-router/entry",
   "version": "1.0.0",
+  "main": "app/newentry.js",
   "scripts": {
     "start": "expo start",
     "reset-project": "node ./scripts/reset-project.js",
@@ -24,6 +24,7 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@weights-ai/react-native-track-player": "^4.1.6",
     "events": "^3.3.0",
     "expo": "~53.0.20",
     "expo-audio": "~0.4.9",

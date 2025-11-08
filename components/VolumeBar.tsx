@@ -1,4 +1,4 @@
-import { getCastStatus, getVolume, isCasting, setVolume, toggleCast, volume as volumeAtom } from "@/lib/playback-control";
+import { getVolume, isCasting, setVolume, toggleCast, volume as volumeAtom } from "@/lib/playback-control";
 import Slider from "@react-native-community/slider";
 import { useAtomValue } from "jotai";
 import { useCallback, useEffect, useState } from "react";
@@ -43,8 +43,6 @@ export function VolumeBar() {
     if (currentDisplayVolume < 0.66) return "volume-medium";
     return "volume-high";
   };
-
-  getCastStatus();
 
   return (
     <View style={styles.container}>

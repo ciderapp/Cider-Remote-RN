@@ -8,11 +8,13 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { atom, getDefaultStore } from "jotai";
 import { io, Socket } from "socket.io-client";
 import {
+  getCastStatus,
   getNowPlayingItem,
   playbackState,
   repeatMode,
   shuffleMode,
-  volume,
+  UpdateNotification,
+  volume
 } from "./playback-control";
 import { fetchQueue } from "./queue";
 
@@ -41,6 +43,8 @@ export class IOState {
     const duration = get(IOState.duration);
     return (progress / duration) * 100;
   });
+
+  static isCasting = atom<boolean>(false);
 
   static async load() {
     const apiToken = await AsyncStorage.getItem("apiToken");
@@ -123,6 +127,11 @@ export class IOState {
         getNowPlayingItem();
         console.log(msg);
         fetchQueue();
+        try{
+          UpdateNotification(msg.data, IOState.store.get(IOState.isCasting));
+        } catch (e) {
+          console.error("Error handling nowPlayingItemDidChange.changeNotification:", e);
+        }
         break;
       case "playbackStatus.playbackStateDidChange": {
         const data = msg.data as PlaybackStateDidChange;
@@ -142,6 +151,22 @@ export class IOState {
       case "playerStatus.volumeDidChange": {
         const data = msg.data as number;
         IOState.store.set(volume, parseFloat(data.toFixed(2)));
+        break;
+      }
+      case "castStatus": {
+        const data = msg.data as boolean;
+        IOState.store.set(IOState.isCasting, data);
+        UpdateNotification(null, data);
+        getCastStatus();
+
+        break;
+      }
+      case "playbackStatus.nowPlayingStatusDidChange": {
+        try{
+          UpdateNotification(null, IOState.store.get(IOState.isCasting));
+        } catch (e) {
+          console.error("Error handling nowPlayingStatusDidChange.changeNotification:", e);
+        }
         break;
       }
       default:

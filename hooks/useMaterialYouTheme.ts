@@ -23,7 +23,6 @@ export function safeMaterialYouChecker(): boolean {
 
 export function useMaterialYouTheme(): Themes {
   const colorScheme = useColorScheme() ?? "light";
-  console.log('SDK Version:', Platform.Version);
   const palette = safeMaterialYouChecker() ? useMaterialYouPalette() : null;
 
   const isAndroid = Platform.OS === "android";

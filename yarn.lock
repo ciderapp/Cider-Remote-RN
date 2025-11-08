@@ -2740,6 +2740,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@weights-ai/react-native-track-player@npm:^4.1.6":
+  version: 4.1.6
+  resolution: "@weights-ai/react-native-track-player@npm:4.1.6"
+  peerDependencies:
+    react: ">=18"
+    react-native: ">=0.77"
+    react-native-windows: ">=0.77"
+    shaka-player: ^4.7.9
+  peerDependenciesMeta:
+    react-native-windows:
+      optional: true
+    shaka-player:
+      optional: true
+  checksum: 10c0/4df7539bf153eda085007f75f6e1052d68be2b64cca94043f92451403145c77ceeef53f310ca90cf9c7d6efe497d43d13352c391648150021082652750758d02
+  languageName: node
+  linkType: hard
+
 "@xmldom/xmldom@npm:^0.8.8":
   version: 0.8.11
   resolution: "@xmldom/xmldom@npm:0.8.11"
@@ -3626,6 +3643,7 @@ __metadata:
     "@types/events": "npm:^3"
     "@types/react": "npm:~19.0.10"
     "@types/xml2js": "npm:^0.4.14"
+    "@weights-ai/react-native-track-player": "npm:^4.1.6"
     babel-plugin-react-compiler: "npm:19.0.0-beta-af1b7da-20250417"
     eslint: "npm:^9.25.0"
     eslint-config-expo: "npm:~9.2.0"
@@ -3660,6 +3678,7 @@ __metadata:
     react-native-safe-area-context: "npm:^5.6.1"
     react-native-screens: "npm:~4.11.1"
     react-native-svg: "npm:^15.12.1"
+    react-native-track-player: "npm:v5.0.0-alpha0"
     react-native-web: "npm:~0.20.0"
     react-native-webview: "npm:13.13.5"
     socket.io-client: "npm:^4.8.1"
@@ -8236,6 +8255,20 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/ed94b57007125c715283fc760438ac8eac0677ced3201f6e272a7cd4459f3fecb672a8eed2c32664e5b8e6e0367585353b0f83f99b231f603d75094bb052c01f
+  languageName: node
+  linkType: hard
+
+"react-native-track-player@npm:v5.0.0-alpha0":
+  version: 5.0.0-alpha0
+  resolution: "react-native-track-player@npm:5.0.0-alpha0"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+    shaka-player: ^4.7.9
+  peerDependenciesMeta:
+    shaka-player:
+      optional: true
+  checksum: 10c0/5f5eb15d7a04871250496d06d88c6af47506409e2752f965a97f37376279e085956abac8a0f5c72c1b7c7ef041cb0f826b1015519e4d57bcbc9315488749d577
   languageName: node
   linkType: hard
 
