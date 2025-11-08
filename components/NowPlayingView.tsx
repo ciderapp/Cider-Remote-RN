@@ -5,6 +5,7 @@ import { useAtomValue } from "jotai";
 import { useState } from "react";
 import { Dimensions, View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
+import History from "./History";
 import Lyrics from "./Lyrics";
 import { NowPlayingArtwork } from "./NowPlayingArtwork";
 import { NowPlayingMetadata } from "./NowPlayingMetadata";
@@ -22,7 +23,7 @@ export function NowPlayingView() {
       : "portrait"
   );
 
-  const [playerMode, setPlayerMode] = useState<"player" | "queue" | "lyrics">(
+  const [playerMode, setPlayerMode] = useState<"player" | "queue" | "history" | "lyrics">(
     "player"
   );
 
@@ -72,6 +73,11 @@ export function NowPlayingView() {
                 {
                   value: "queue",
                   label: "Queue",
+                  icon: "playlist-music",
+                },
+                {
+                  value: "history",
+                  label: "History",
                   icon: "playlist-music",
                 },
                 {
@@ -130,6 +136,19 @@ export function NowPlayingView() {
                 }}
               >
                 <Queue />
+              </View>
+            )}
+            {playerMode === "history" && (
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flex: 1,
+                  width: "100%",
+                  display: "flex",
+                }}
+              >
+                <History />
               </View>
             )}
             {playerMode === "lyrics" && (
