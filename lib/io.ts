@@ -119,7 +119,6 @@ export class IOState {
         IOState.store.set(IOState.progress, data.currentPlaybackTime);
         IOState.store.set(IOState.duration, data.currentPlaybackDuration);
         IOState.store.set(playbackState, data.isPlaying ? "playing" : "paused");
-        UpdateNotificationMinimal(data.currentPlaybackTime);
         break;
       }
       case "playbackStatus.nowPlayingItemDidChange":
