@@ -21,6 +21,11 @@ export const currentNotificationItem = atom<any | null>(null);
 export async function getVolume() {
   const res = await CiderFetch<{ volume: number }>("/api/v1/playback/volume");
   if(!res) return;
+  /// Check if res.volume is valid, sometimes Cider sent nowPlayingItem as volume, causing crashes
+  if (typeof res.volume !== 'number' || res.volume < 0 || res.volume > 1) {
+    console.warn('/api/v1/playback/volume returned invalid volume:', res.volume);
+    return;
+  }
   store.set(volume, res.volume);
 }
 
@@ -39,7 +44,11 @@ export async function getNowPlayingItem() {
 }
 
 export function resetElapsedTime() {
-  store.set(lastElapsedTime, -2);
+  try {
+    store.set(lastElapsedTime, -2);
+  } catch (e) {
+    console.error("Error resetting elapsed time:", e);
+  }
 }
 
 
