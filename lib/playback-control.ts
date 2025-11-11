@@ -48,13 +48,13 @@ export async function UpdateNotificationMinimal(elapsedTime?: number) {
         let targetElapsedTime = elapsedTime ? elapsedTime : (IOState.store.get(IOState.progress) || 0);
         // Update only if the target elapsed time > 1.5 seconds different from last elapsed time
         let lastTime = store.get(lastElapsedTime);
-        if (Math.abs(targetElapsedTime - lastTime) < 1500) {
+        if (Math.abs(targetElapsedTime - lastTime) < 1.5) {
             return;
         }
         store.set(lastElapsedTime, targetElapsedTime);
         MusicControl.updatePlayback({
           state: store.get(isPlaying) ? MusicControl.STATE_PLAYING : MusicControl.STATE_PAUSED,
-          elapsedTime: targetElapsedTime / 1000,
+          elapsedTime: targetElapsedTime ,
         });
     } catch (e) {
         console.error("Error updating notification elapsed time:", e);
@@ -161,6 +161,7 @@ export async function seekTo(position: number) {
       }
     );
     console.log("Seek API response:", response);
+    resetElapsedTime();
     return response;
   } catch (error) {
     console.error("Seek API error:", error);
