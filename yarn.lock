@@ -3631,6 +3631,7 @@ __metadata:
     eslint-config-expo: "npm:~9.2.0"
     events: "npm:^3.3.0"
     expo: "npm:~53.0.20"
+    expo-audio: "npm:~0.4.9"
     expo-blur: "npm:~14.1.5"
     expo-build-properties: "npm:^0.14.8"
     expo-camera: "npm:~16.1.11"
@@ -3654,6 +3655,7 @@ __metadata:
     react-native-draggable-flatlist: "npm:^4.0.3"
     react-native-gesture-handler: "npm:^2.28.0"
     react-native-material-you: "npm:^1.3.0"
+    react-native-music-control: "https://github.com/dummyaccount134/react-native-music-control"
     react-native-paper: "npm:^5.14.5"
     react-native-reanimated: "npm:~3.17.4"
     react-native-safe-area-context: "npm:^5.6.1"
@@ -4804,6 +4806,17 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10c0/32d1ccd630c7e62ec4b71cf03e2414fb389ca5d6383a5243ff9efe6ac71061ea626aa7f1503ccd3187d62451165034265b2ed04e508626710f810c0d0246a81d
+  languageName: node
+  linkType: hard
+
+"expo-audio@npm:~0.4.9":
+  version: 0.4.9
+  resolution: "expo-audio@npm:0.4.9"
+  peerDependencies:
+    expo: "*"
+    react: "*"
+    react-native: "*"
+  checksum: 10c0/e5b9e07445a5777bdcaaf50acab2bb825e1d8fbbc8913e32601bdb87ebc75b8d9e8ec8eeaf77b27d068649083066c538e5153feecd6352f7cc8b3f6a40e6f81c
   languageName: node
   linkType: hard
 
@@ -8147,6 +8160,15 @@ __metadata:
     react: ^17.0.2
     react-native: ^0.65.1
   checksum: 10c0/5ab5c7d4ccfde3707dd44e910f301e3d91da9a2c36751fbb233141c050b853f1181901ef65e5722061cc6b5b69c7624ea9629fd93e87b38ef6c0c0d4a027df66
+  languageName: node
+  linkType: hard
+
+"react-native-music-control@https://github.com/dummyaccount134/react-native-music-control":
+  version: 1.4.24
+  resolution: "react-native-music-control@https://github.com/dummyaccount134/react-native-music-control.git#commit=c819a5fad7422b90cdf33e48133b4db0651a212b"
+  peerDependencies:
+    react-native: ">=0.40.0"
+  checksum: 10c0/da0bfba88e67e4837ceaf4f02db60bfb5261e7cb24b12fd8fa81d91ffe7c6169928ed6793d061437bee17cdc20bc7022a950d4518637e76f52253090c5dfbec3
   languageName: node
   linkType: hard
 

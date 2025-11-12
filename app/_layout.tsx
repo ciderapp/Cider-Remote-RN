@@ -6,12 +6,17 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
-import { useMaterialYouTheme } from "@/hooks/useMaterialYouTheme";
+import { safeMaterialYouChecker, useMaterialYouTheme } from "@/hooks/useMaterialYouTheme";
+import { nextTrack, playPause, previousTrack, seekTo, UpdateNotification } from "@/lib/playback-control";
 import { MaterialYouService } from "@assembless/react-native-material-you";
-import { Platform } from "react-native";
+import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import MusicControl, { Command } from "react-native-music-control";
 import { PaperProvider } from "react-native-paper";
 import { configureReanimatedLogger } from "react-native-reanimated";
+
+
+
 
 configureReanimatedLogger({
   strict: false, // Reanimated runs in strict mode by default
@@ -19,6 +24,39 @@ configureReanimatedLogger({
 
 function ThemedProviders() {
   const { paperTheme, navTheme } = useMaterialYouTheme();
+
+  useEffect(() => {
+    MusicControl.enableBackgroundMode(true);
+
+    MusicControl.handleAudioInterruptions(false);
+
+    MusicControl.enableControl("play", true);
+    MusicControl.enableControl("pause", true);
+    MusicControl.enableControl("nextTrack", true);
+    MusicControl.enableControl("previousTrack", true);
+
+    // Changing track position on lockscreen
+    MusicControl.enableControl("changePlaybackPosition", true);
+    MusicControl.enableControl("seek", true);
+    MusicControl.on(Command.play, ()=> {
+        try {playPause().then(() => UpdateNotification(null))} catch (e) {console.error(e)}})
+    MusicControl.on(Command.pause, ()=> {
+        try {playPause().then(() => UpdateNotification(null))} catch (e) {console.error(e)}})
+    MusicControl.on(Command.nextTrack, ()=> {
+        try {nextTrack().then(() => UpdateNotification(null))} catch (e) {console.error(e)}})
+    MusicControl.on(Command.previousTrack, ()=> {
+        try {previousTrack().then(() => UpdateNotification(null))} catch (e) {console.error(e)}})
+    MusicControl.on(Command.seek, (pos)=> {
+        try {
+          seekTo(pos);
+          MusicControl.updatePlayback({
+              elapsedTime: pos,
+          });
+        } catch (e) {
+          console.error(e);
+        }
+    });
+  }, []);
 
   return (
     <PaperProvider theme={paperTheme}>
@@ -100,15 +138,13 @@ export default function RootLayout() {
     Roboto_900Black,
   });
   const loaded = localLoaded && googleFlexLoaded && googleRobotoLoaded;
-  
 
   if (!loaded) {
     // Async font loading only occurs in development.
     return null;
   }
 
-  const isNewerThan30 = Platform.OS === "android" && Number(Platform.Version) >= 31;
-  const materialYouElement = isNewerThan30 ? (
+  const materialYouElement = safeMaterialYouChecker() ? (
     <MaterialYouService>
       <ThemedProviders/>
     </MaterialYouService>
@@ -124,3 +160,4 @@ export default function RootLayout() {
   );
 
 }
+

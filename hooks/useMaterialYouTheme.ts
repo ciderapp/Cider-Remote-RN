@@ -1,4 +1,4 @@
-import { useMaterialYouPalette } from "@assembless/react-native-material-you";
+import { deviceSupportsMaterialYou, useMaterialYouPalette } from "@assembless/react-native-material-you";
 import { DarkTheme as NavigationDarkTheme, DefaultTheme as NavigationDefaultTheme, Theme as NavigationTheme } from "@react-navigation/native";
 import { useMemo } from "react";
 import { Platform } from "react-native";
@@ -11,11 +11,19 @@ type Themes = {
   navTheme: NavigationTheme;
 };
 
+// Do this so that it won't crash on older Android versions but still fallback on some weird Android 
+// devices that might not support Material You on Android 12+ (and Expo Go)
+export function safeMaterialYouChecker(): boolean {
+  const isNewerThan30 = Platform.OS === "android" && Number(Platform.Version) >= 31;
+  if (isNewerThan30) {
+    return deviceSupportsMaterialYou();
+  }
+  return false; 
+}
+
 export function useMaterialYouTheme(): Themes {
   const colorScheme = useColorScheme() ?? "light";
-  console.log('SDK Version:', Platform.Version);
-  const isNewerThan30 = Platform.OS === "android" && Number(Platform.Version) >= 31;
-  const palette = isNewerThan30 ? useMaterialYouPalette() : null;
+  const palette = safeMaterialYouChecker() ? useMaterialYouPalette() : null;
 
   const isAndroid = Platform.OS === "android";
   const isDark = colorScheme === "dark";

@@ -1,8 +1,8 @@
 /** @format */
 
-import { nowPlayingItem } from "@/lib/playback-control";
+import { isPlaying, nowPlayingItem, UpdateNotification } from "@/lib/playback-control";
 import { useAtomValue } from "jotai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dimensions, View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import Lyrics from "./Lyrics";
@@ -15,12 +15,33 @@ import { VolumeBar } from "./VolumeBar";
 
 export function NowPlayingView() {
   const nowPlaying = useAtomValue(nowPlayingItem);
+  const isPlayingB = useAtomValue(isPlaying);  
 
   const [orientation] = useState<"portrait" | "landscape">(
     Dimensions.get("window").width > Dimensions.get("window").height
       ? "landscape"
       : "portrait"
   );
+
+  useEffect(() => {
+    const task = async ()=> {
+      try {
+        await UpdateNotification();
+      } catch (e) {
+        console.error("Error updating notification:", e);
+      }
+    };
+    task();
+  }, []);
+
+  useEffect(() => {
+    try {
+      UpdateNotification(null);
+    } catch (e) {
+      console.error("Error updating notification:", e);
+    }
+  }, [isPlayingB]);
+
 
   const [playerMode, setPlayerMode] = useState<"player" | "queue" | "lyrics">(
     "player"
