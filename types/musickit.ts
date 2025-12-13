@@ -137,6 +137,7 @@ export type QueueItem = {
     "hls-key-server-url": string;
     "widevine-cert-url": string;
   };
+  originalIndex?: number;
 } & MediaItem;
 
 export type LibraryPlaylist = {

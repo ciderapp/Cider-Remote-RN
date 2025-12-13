@@ -17,7 +17,7 @@ import {
   UpdateNotificationMinimal,
   volume
 } from "./playback-control";
-import { fetchQueue } from "./queue";
+import { fetchModifiedQueue, fetchQueue } from "./queue";
 
 export class IOState {
   static instance: Socket;
@@ -96,6 +96,7 @@ export class IOState {
 
     await getStorefront();
     getNowPlayingItem();
+    fetchModifiedQueue()
     fetchQueue();
   }
 
@@ -135,6 +136,7 @@ export class IOState {
         }
         getNowPlayingItem();
         console.log(msg);
+        fetchModifiedQueue()
         fetchQueue();
         try{
           UpdateNotification(msg.data);
