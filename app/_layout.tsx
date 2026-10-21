@@ -7,11 +7,12 @@ import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 
 import { safeMaterialYouChecker, useMaterialYouTheme } from "@/hooks/useMaterialYouTheme";
+import { IOState } from "@/lib/io";
 import { nextTrack, playPause, previousTrack, seekTo, UpdateNotification } from "@/lib/playback-control";
 import { MaterialYouService } from "@assembless/react-native-material-you";
 import { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import MusicControl, { Command } from "react-native-music-control";
+import MusicControl, { Command } from "@/lib/music-control";
 import { PaperProvider } from "react-native-paper";
 import { configureReanimatedLogger } from "react-native-reanimated";
 
@@ -24,6 +25,16 @@ configureReanimatedLogger({
 
 function ThemedProviders() {
   const { paperTheme, navTheme } = useMaterialYouTheme();
+
+  useEffect(() => {
+    // Connect from the root so it happens whichever route the app opens on
+    // (e.g. a reload on /library on web), not only when Home mounts.
+    IOState.load().then(() => {
+      if (IOState.store.get(IOState.apiToken)) {
+        IOState.connect();
+      }
+    });
+  }, []);
 
   useEffect(() => {
     MusicControl.enableBackgroundMode(true);

@@ -3,7 +3,7 @@ import { ItemTypes } from "@/types/search";
 import { formatArtworkUrl } from "@/utils/artwork";
 import { CiderFetch } from "@/utils/fetch";
 import { atom, getDefaultStore } from "jotai";
-import MusicControl from "react-native-music-control";
+import MusicControl from "@/lib/music-control";
 import { IOState } from "./io";
 
 const store = getDefaultStore();

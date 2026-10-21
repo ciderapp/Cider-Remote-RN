@@ -1,4 +1,5 @@
 import { interact } from "@/lib/interact";
+import { IOState } from "@/lib/io";
 import { getLibraryPlaylists, libraryPlaylists, libraryPlaylistsLoading } from "@/lib/library";
 import { ItemTypes } from "@/types/search";
 import { useRouter } from "expo-router";
@@ -13,10 +14,13 @@ export default function Library() {
     const playlists = useAtomValue(libraryPlaylists);
     const playlistsLoading = useAtomValue(libraryPlaylistsLoading);
     const router = useRouter();
+    const connected = useAtomValue(IOState.connected);
 
+    // Wait for the connection: on web the app can open straight on this tab,
+    // before the saved token is loaded, and the request would be rejected.
     useEffect(() => {
-        getLibraryPlaylists();
-    }, [])
+        if (connected) getLibraryPlaylists();
+    }, [connected])
 
     // Compose all page sections into a single array for FlatList
     const flatData = useMemo(() => {

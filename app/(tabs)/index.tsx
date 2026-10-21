@@ -14,11 +14,9 @@ export default function HomeScreen() {
   const router = useRouter();
 
   useEffect(() => {
+    // The root layout loads the saved settings and connects; just wait for them here.
     IOState.load().then(() => {
       setReady(true);
-      if(IOState.store.get(IOState.apiToken)) {
-        IOState.connect();
-      }
     });
   }, []);
 
