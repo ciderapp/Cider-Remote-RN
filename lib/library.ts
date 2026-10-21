@@ -10,7 +10,8 @@ export const libraryPlaylistsLoading = atom<boolean>(false);
 export async function getLibraryPlaylists() {
   store.set(libraryPlaylistsLoading, true);
   const res = await v3Turbo<LibraryPlaylist[]>("/v1/me/library/playlists");
-  if(!res) return; 
-  store.set(libraryPlaylists, res);
+  // Clear the spinner on failure too, otherwise it spins until a manual Refresh succeeds.
   store.set(libraryPlaylistsLoading, false);
+  if(!res) return;
+  store.set(libraryPlaylists, res);
 }

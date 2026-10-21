@@ -41,6 +41,14 @@ export async function getNowPlayingItem() {
   store.set(nowPlayingItem, res.info);
   store.set(repeatMode, res.info.repeatMode);
   store.set(shuffleMode, res.info.shuffleMode);
+  // playbackTimeDidChange only fires while playing, so prime progress from the snapshot
+  // or a paused track shows 0:00 until playback resumes.
+  if (typeof res.info.currentPlaybackTime === "number") {
+    IOState.store.set(IOState.progress, res.info.currentPlaybackTime);
+  }
+  if (typeof res.info.durationInMillis === "number") {
+    IOState.store.set(IOState.duration, res.info.durationInMillis / 1000);
+  }
 }
 
 export function resetElapsedTime() {
